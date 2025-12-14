@@ -1,0 +1,234 @@
+[
+    {
+        "id": "amex_gold", "displayName": "AMEX Gold", "multipliers": {
+            "dining": 4, "grocery": 4, "travel": 3, "general": 1
+        }
+    },
+    {
+        "id": "chase_sapphire_preferred", "displayName": "Chase Sapphire Preferred", "multipliers": {
+            "dining": 3, "travel": 3, "general": 1
+        }
+    },
+    {
+        "id": "citi_double_cash", "displayName": "Citi Double Cash", "multipliers": {
+            "general": 2
+        }
+    },
+    {
+        "id": "capital_one_savor", "displayName": "Capital One Savor", "multipliers": {
+            "dining": 4, "grocery": 3, "general": 1
+        }
+    },
+    {
+        "id": "amex_blue_cash_preferred", "displayName": "AMEX Blue Cash Preferred", "multipliers": {
+            "grocery": 6, "gas": 3, "general": 1
+        }
+    },
+    {
+        "id": "bilt", "displayName": "Bilt Mastercard", "multipliers": {
+            "dining": 3, "travel": 2, "general": 1
+        }
+    },
+    {
+        "id": "venture_x", "displayName": "Capital One Venture X", "multipliers": {
+            "travel": 2, "general": 2
+        }
+    },
+    {
+        "id": "chase_freedom_unlimited", "displayName": "Chase Freedom Unlimited", "multipliers": {
+            "dining": 3, "travel": 2, "general": 1.5
+        }
+    },
+    {
+        "id": "chase_freedom_flex", "displayName": "Chase Freedom Flex", "multipliers": {
+            "dining": 3, "travel": 5, "general": 1
+        }
+    },
+    {
+        "id": "discover_it", "displayName": "Discover it", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "amex_platinum", "displayName": "AMEX Platinum", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "amex_green", "displayName": "AMEX Green", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "amex_everyday", "displayName": "AMEX EveryDay", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "amex_everyday_preferred", "displayName": "AMEX EveryDay Preferred", "multipliers": {
+            "general": 1
+        }
+    },
+    
+    {
+        "id": "chase_sapphire_reserve", "displayName": "Chase Sapphire Reserve", "multipliers": {
+            "dining": 3, "travel": 3, "general": 1
+        }
+    },
+    {
+        "id": "chase_freedom_rise", "displayName": "Chase Freedom Rise", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "chase_ink_cash", "displayName": "Chase Ink Business Cash", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "chase_ink_unlimited", "displayName": "Chase Ink Business Unlimited", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "chase_ink_preferred", "displayName": "Chase Ink Business Preferred", "multipliers": {
+            "travel": 3, "general": 1
+        }
+    },
+    
+    {
+        "id": "citi_premier", "displayName": "Citi Strata Premier / Premier", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "citi_custom_cash", "displayName": "Citi Custom Cash", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "citi_rewards_plus", "displayName": "Citi Rewards+", "multipliers": {
+            "general": 1
+        }
+    },
+    
+    {
+        "id": "capital_one_venture", "displayName": "Capital One Venture", "multipliers": {
+            "travel": 2, "general": 2
+        }
+    },
+    {
+        "id": "capital_one_ventureone", "displayName": "Capital One VentureOne", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "capital_one_quicksilver", "displayName": "Capital One Quicksilver", "multipliers": {
+            "general": 1
+        }
+    },
+    
+    {
+        "id": "wells_fargo_autograph", "displayName": "Wells Fargo Autograph", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "wells_fargo_active_cash", "displayName": "Wells Fargo Active Cash", "multipliers": {
+            "general": 2
+        }
+    },
+    
+    {
+        "id": "barclays_jetblue_plus", "displayName": "JetBlue Plus", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "barclays_aadvantage_aviator_red", "displayName": "AAdvantage Aviator Red", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    
+    {
+        "id": "boa_customized_cash", "displayName": "Bank of America Customized Cash Rewards", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "boa_unlimited_cash", "displayName": "Bank of America Unlimited Cash Rewards", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "boa_premium_rewards", "displayName": "Bank of America Premium Rewards", "multipliers": {
+            "travel": 2, "general": 1
+        }
+    },
+    
+    {
+        "id": "usbank_altitude_go", "displayName": "U.S. Bank Altitude Go", "multipliers": {
+            "dining": 4, "general": 1
+        }
+    },
+    {
+        "id": "usbank_cash_plus", "displayName": "U.S. Bank Cash+", "multipliers": {
+            "general": 1
+        }
+    },
+    {
+        "id": "usbank_altitude_reserve", "displayName": "U.S. Bank Altitude Reserve", "multipliers": {
+            "travel": 3, "general": 1
+        }
+    },
+    
+    {
+        "id": "discover_miles", "displayName": "Discover Miles", "multipliers": {
+            "general": 1
+        }
+    },
+    
+    {
+        "id": "amazon_prime_visa", "displayName": "Amazon Prime Visa", "multipliers": {
+            "online": 5, "general": 1
+        }
+    },
+    {
+        "id": "apple_card", "displayName": "Apple Card", "multipliers": {
+            "general": 1
+        }
+    },
+    
+    {
+        "id": "marriott_bonvoy_boundless", "displayName": "Marriott Bonvoy Boundless", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "hilton_honors_surpass", "displayName": "Hilton Honors Surpass", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "ihg_premier", "displayName": "IHG One Rewards Premier", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    
+    {
+        "id": "delta_skymiles_gold", "displayName": "Delta SkyMiles Gold", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "united_explorer", "displayName": "United Explorer", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    },
+    {
+        "id": "southwest_priority", "displayName": "Southwest Rapid Rewards Priority", "multipliers": {
+            "travel": 1, "general": 1
+        }
+    }
+
+]
