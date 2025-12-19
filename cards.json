@@ -1,234 +1,533 @@
-[
+{
+  "schema_version": 1,
+  "generated_at": "2025-12-19T05:23:38Z",
+  "category_mapping": {
+    "travel_includes_transit": true
+  },
+  "cards": [
     {
-        "id": "amex_gold", "displayName": "AMEX Gold", "multipliers": {
-            "dining": 4, "grocery": 4, "travel": 3, "general": 1
+      "card_key": "chase_sapphire_preferred",
+      "card_name": "Chase Sapphire Preferred",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
+      "verified_date": "2025-12-17",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 3.0,
+        "gas": 1.0,
+        "travel": 2.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 5x travel when booked via Chase Travel portal"
         }
+      ]
     },
     {
-        "id": "chase_sapphire_preferred", "displayName": "Chase Sapphire Preferred", "multipliers": {
-            "dining": 3, "travel": 3, "general": 1
+      "card_key": "amex_gold",
+      "card_name": "American Express® Gold Card",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
+      "verified_date": "2025-12-17",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 4.0,
+        "grocery": 4.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "3x on flights (airfare) when booked directly with airlines or via Amex Travel (not modeled as Travel category)"
         }
+      ]
     },
     {
-        "id": "citi_double_cash", "displayName": "Citi Double Cash", "multipliers": {
-            "general": 2
+      "card_key": "citi_custom_cash",
+      "card_name": "Citi Custom Cash",
+      "issuer": "Citi",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-custom-cash-credit-card",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Earns 5% in top eligible category each billing cycle (up to cap); not modeled in base logic"
         }
+      ]
     },
     {
-        "id": "capital_one_savor", "displayName": "Capital One Savor", "multipliers": {
-            "dining": 4, "grocery": 3, "general": 1
+      "card_key": "capitalone_savor",
+      "card_name": "Capital One Savor",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/savor/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 3.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel"
         }
+      ]
     },
     {
-        "id": "amex_blue_cash_preferred", "displayName": "AMEX Blue Cash Preferred", "multipliers": {
-            "grocery": 6, "gas": 3, "general": 1
+      "card_key": "bofa_customized_cash",
+      "card_name": "Bank of America Customized Cash",
+      "issuer": "Bank of America",
+      "issuer_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "User selects one 3% category (caps apply; not modeled)"
         }
+      ]
     },
     {
-        "id": "bilt", "displayName": "Bilt Mastercard", "multipliers": {
-            "dining": 3, "travel": 2, "general": 1
+      "card_key": "chase_freedom_unlimited",
+      "card_name": "Chase Freedom Unlimited",
+      "issuer": "Chase",
+      "issuer_url": "https://www.chase.com/personal/credit-cards/freedom/unlimited",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 5x travel when booked via Chase Travel portal"
         }
+      ]
     },
     {
-        "id": "venture_x", "displayName": "Capital One Venture X", "multipliers": {
-            "travel": 2, "general": 2
+      "card_key": "amex_blue_cash_preferred",
+      "card_name": "American Express Blue Cash Preferred®",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 6.0,
+        "gas": 3.0,
+        "travel": 3.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "6% U.S. supermarkets (cap). 3% U.S. gas stations (cap). travel_multiplier maps issuer Transit (rideshare, taxis, parking, tolls, trains, buses) to Travel"
         }
+      ]
     },
     {
-        "id": "chase_freedom_unlimited", "displayName": "Chase Freedom Unlimited", "multipliers": {
-            "dining": 3, "travel": 2, "general": 1.5
+      "card_key": "citi_double_cash",
+      "card_name": "Citi Double Cash",
+      "issuer": "Citi",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-double-cash-credit-card",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Earn 5% total cash back on select Citi travel bookings"
         }
+      ]
     },
     {
-        "id": "chase_freedom_flex", "displayName": "Chase Freedom Flex", "multipliers": {
-            "dining": 3, "travel": 5, "general": 1
+      "card_key": "amazon_prime_visa",
+      "card_name": "Amazon Prime Visa",
+      "issuer": "Chase",
+      "issuer_url": "https://www.amazon.com/Prime-Visa/dp/BT00LN946S",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 2.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Earn unlimited 5% back on Chase Travel purchases, 5% on Amazon & whole foods with an eligible Prime membership"
         }
+      ]
     },
     {
-        "id": "discover_it", "displayName": "Discover it", "multipliers": {
-            "general": 1
+      "card_key": "amex_blue_cash_everyday",
+      "card_name": "American Express Blue Cash Everyday®",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 3.0,
+        "gas": 3.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Annual caps apply; online retail not modeled"
         }
+      ]
     },
     {
-        "id": "amex_platinum", "displayName": "AMEX Platinum", "multipliers": {
-            "travel": 1, "general": 1
+      "card_key": "apple_card",
+      "card_name": "Apple Card",
+      "issuer": "Goldman Sachs",
+      "issuer_url": "https://www.apple.com/apple-card/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "3% cash back on Apple purchases & 2% cash back on all other purchases when you use the Apple Card with Apple Pay"
         }
+      ]
     },
     {
-        "id": "amex_green", "displayName": "AMEX Green", "multipliers": {
-            "travel": 1, "general": 1
+      "card_key": "capitalone_quick_silver",
+      "card_name": "Capital One Quicksilver",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/quicksilver/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "earn 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel"
         }
+      ]
     },
     {
-        "id": "amex_everyday", "displayName": "AMEX EveryDay", "multipliers": {
-            "general": 1
+      "card_key": "discover_it",
+      "card_name": "Discover it",
+      "issuer": "Discover",
+      "issuer_url": "https://www.discover.com/credit-cards/cash-back/it-card.html",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "5% rotating quarterly categories (activation required; not modeled)"
         }
+      ]
     },
     {
-        "id": "amex_everyday_preferred", "displayName": "AMEX EveryDay Preferred", "multipliers": {
-            "general": 1
+      "card_key": "citi_simplicity",
+      "card_name": "Citi Simplicity",
+      "issuer": "Citi",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-simplicity-credit-card",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 0.0,
+        "grocery": 0.0,
+        "gas": 0.0,
+        "travel": 0.0,
+        "other": 0.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "No rewards (APR/BT card)"
         }
-    },
-    
-    {
-        "id": "chase_sapphire_reserve", "displayName": "Chase Sapphire Reserve", "multipliers": {
-            "dining": 3, "travel": 3, "general": 1
-        }
-    },
-    {
-        "id": "chase_freedom_rise", "displayName": "Chase Freedom Rise", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "chase_ink_cash", "displayName": "Chase Ink Business Cash", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "chase_ink_unlimited", "displayName": "Chase Ink Business Unlimited", "multipliers": {
-            "general": 1
-        }
+      ]
     },
     {
-        "id": "chase_ink_preferred", "displayName": "Chase Ink Business Preferred", "multipliers": {
-            "travel": 3, "general": 1
+      "card_key": "capitalone_venture",
+      "card_name": "Capital One Venture",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/venture/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Earn 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel"
         }
-    },
-    
-    {
-        "id": "citi_premier", "displayName": "Citi Strata Premier / Premier", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "citi_custom_cash", "displayName": "Citi Custom Cash", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "citi_rewards_plus", "displayName": "Citi Rewards+", "multipliers": {
-            "general": 1
-        }
-    },
-    
-    {
-        "id": "capital_one_venture", "displayName": "Capital One Venture", "multipliers": {
-            "travel": 2, "general": 2
-        }
+      ]
     },
     {
-        "id": "capital_one_ventureone", "displayName": "Capital One VentureOne", "multipliers": {
-            "general": 1
+      "card_key": "amex_platinum",
+      "card_name": "American Express Platinum",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/platinum/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "5% Booked directly with airlines or through American Express Travel®"
         }
+      ]
     },
     {
-        "id": "capital_one_quicksilver", "displayName": "Capital One Quicksilver", "multipliers": {
-            "general": 1
+      "card_key": "capitalone_venture_x",
+      "card_name": "Capital One Venture X",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/venture-x/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "10x Miles on hotels & rental cars , & 5x Miles on flights and vacation rentals booked through Capital One Travel"
         }
-    },
-    
-    {
-        "id": "wells_fargo_autograph", "displayName": "Wells Fargo Autograph", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "wells_fargo_active_cash", "displayName": "Wells Fargo Active Cash", "multipliers": {
-            "general": 2
-        }
-    },
-    
-    {
-        "id": "barclays_jetblue_plus", "displayName": "JetBlue Plus", "multipliers": {
-            "travel": 1, "general": 1
-        }
-    },
-    {
-        "id": "barclays_aadvantage_aviator_red", "displayName": "AAdvantage Aviator Red", "multipliers": {
-            "travel": 1, "general": 1
-        }
-    },
-    
-    {
-        "id": "boa_customized_cash", "displayName": "Bank of America Customized Cash Rewards", "multipliers": {
-            "general": 1
-        }
+      ]
     },
     {
-        "id": "boa_unlimited_cash", "displayName": "Bank of America Unlimited Cash Rewards", "multipliers": {
-            "general": 1
+      "card_key": "wellsfargo_autograph",
+      "card_name": "Wells Fargo Autograph",
+      "issuer": "Wells Fargo",
+      "issuer_url": "https://creditcards.wellsfargo.com/autograph-visa-credit-card/?sub_channel=WEB&vendor_code=WF",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 3.0,
+        "travel": 3.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "3x on phone plans and streaming services"
         }
+      ]
     },
     {
-        "id": "boa_premium_rewards", "displayName": "Bank of America Premium Rewards", "multipliers": {
-            "travel": 2, "general": 1
+      "card_key": "chase_united_explorer",
+      "card_name": "United Explorer",
+      "issuer": "Chase",
+      "issuer_url": "https://www.chase.com/personal/credit-cards/united/united-explorer-card/earn-rewards",
+      "verified_date": "2025-12-18",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "5 miles per dollar spent on hotel stays purchased through United Hotels & 2 miles per dollar spent on purchases from United"
         }
-    },
-    
-    {
-        "id": "usbank_altitude_go", "displayName": "U.S. Bank Altitude Go", "multipliers": {
-            "dining": 4, "general": 1
-        }
-    },
-    {
-        "id": "usbank_cash_plus", "displayName": "U.S. Bank Cash+", "multipliers": {
-            "general": 1
-        }
-    },
-    {
-        "id": "usbank_altitude_reserve", "displayName": "U.S. Bank Altitude Reserve", "multipliers": {
-            "travel": 3, "general": 1
-        }
-    },
-    
-    {
-        "id": "discover_miles", "displayName": "Discover Miles", "multipliers": {
-            "general": 1
-        }
-    },
-    
-    {
-        "id": "amazon_prime_visa", "displayName": "Amazon Prime Visa", "multipliers": {
-            "online": 5, "general": 1
-        }
+      ]
     },
     {
-        "id": "apple_card", "displayName": "Apple Card", "multipliers": {
-            "general": 1
+      "card_key": "chase_freedom_flex",
+      "card_name": "Chase Freedom Flex",
+      "issuer": "Chase",
+      "issuer_url": "https://www.chase.com/personal/credit-cards/freedom/flex",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "5% rotating quarterly categories (activation required; not modeled)"
+        },
+        {
+          "type": "portal_note",
+          "text": "Up to 5x travel when booked via Chase Travel portal"
         }
-    },
-    
-    {
-        "id": "marriott_bonvoy_boundless", "displayName": "Marriott Bonvoy Boundless", "multipliers": {
-            "travel": 1, "general": 1
-        }
-    },
-    {
-        "id": "hilton_honors_surpass", "displayName": "Hilton Honors Surpass", "multipliers": {
-            "travel": 1, "general": 1
-        }
-    },
-    {
-        "id": "ihg_premier", "displayName": "IHG One Rewards Premier", "multipliers": {
-            "travel": 1, "general": 1
-        }
-    },
-    
-    {
-        "id": "delta_skymiles_gold", "displayName": "Delta SkyMiles Gold", "multipliers": {
-            "travel": 1, "general": 1
-        }
+      ]
     },
     {
-        "id": "united_explorer", "displayName": "United Explorer", "multipliers": {
-            "travel": 1, "general": 1
+      "card_key": "bilt_card",
+      "card_name": "Bilt Card",
+      "issuer": "Wells Fargo",
+      "issuer_url": "https://www.biltrewards.com/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 2.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Earns 1x on rent (special category; not modeled)"
         }
+      ]
     },
     {
-        "id": "southwest_priority", "displayName": "Southwest Rapid Rewards Priority", "multipliers": {
-            "travel": 1, "general": 1
+      "card_key": "bofa_unlimited_cash_rewards",
+      "card_name": "Bank of America® Unlimited Cash Rewards",
+      "issuer": "Bank of America",
+      "issuer_url": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "2% for first year"
         }
+      ]
+    },
+    {
+      "card_key": "chase_sapphire_reserve",
+      "card_name": "Chase Sapphire Reserve",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 3.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 8x points when booked via Chase Travel portal (credits not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "wellsfargo_activecash",
+      "card_name": "Wells Fargo Active Cash",
+      "issuer": "Wells Fargo",
+      "issuer_url": "https://creditcards.wellsfargo.com/active-cash-credit-card/?sub_channel=SEO&vendor_code=G",
+      "verified_date": "2025-12-18",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": []
+    },
+    {
+      "card_key": "us_bank_altitude_go",
+      "card_name": "U.S. Bank Altitude® Go Visa Signature®",
+      "issuer": "U.S. Bank",
+      "issuer_url": "https://www.usbank.com/credit-cards/altitude-go-visa-signature-credit-card.html",
+      "verified_date": "2025-12-18",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 4.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "2x on eligible streaming services (not modeled)"
+        }
+      ]
     }
-
-]
+  ]
+}
