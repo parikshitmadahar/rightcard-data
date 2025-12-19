@@ -5,6 +5,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# Always sync with remote before making changes
+git pull --rebase origin main
+
 # Load local env (not committed)
 if [ -f .env ]; then
   # shellcheck disable=SC1091
