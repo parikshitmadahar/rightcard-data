@@ -238,10 +238,8 @@ def parse_rows(csv_text: str) -> List[CardRow]:
 
 
 def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
-    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     return {
         "schema_version": 1,
-        "generated_at": generated_at,
         "category_mapping": CATEGORY_MAPPING,
         "cards": [
             {
@@ -257,6 +255,7 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
             for c in cards
         ],
     }
+
 
 
 def write_json(path: str, data: Dict[str, Any]) -> None:
@@ -296,13 +295,14 @@ def main() -> int:
     digest = compute_sha256_file(cards_json_path)
     version = f"sha256:{digest[:12]}"
 
-    generated_at = cards_json["generated_at"]
+    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     cards_version = {
         "schema_version": 1,
         "version": version,
         "generated_at": generated_at,
         "cards_count": len(cards),
     }
+
 
     write_json(cards_version_path, cards_version)
 
