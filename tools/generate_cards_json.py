@@ -8,8 +8,13 @@ Usage:
     --out-dir "./data"
 
 Outputs:
-  data/cards.json
-  data/cards_version.json
+  cards.json
+  cards_version.json
+
+Key behavior:
+- cards.json is deterministic for identical CSV input.
+- cards_version.json is ONLY rewritten when cards.json content changes (version changes),
+  so running the script without sheet changes will NOT create noise commits.
 """
 
 from __future__ import annotations
@@ -22,8 +27,9 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from io import StringIO
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-from urllib.request import urlopen, Request
+from urllib.request import Request, urlopen
 
 
 REQUIRED_HEADERS = [
@@ -64,11 +70,24 @@ class ValidationError(Exception):
     pass
 
 
+def _utc_now_z() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _read_json_if_exists(path: str) -> Optional[Dict[str, Any]]:
+    p = Path(path)
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
 def fetch_csv_text(csv_url: str, timeout_seconds: int = 30) -> str:
     req = Request(csv_url, headers={"User-Agent": "RightCard-Generator/1.0"})
     with urlopen(req, timeout=timeout_seconds) as resp:
         raw = resp.read()
-    # Google CSV is typically UTF-8
     return raw.decode("utf-8", errors="replace")
 
 
@@ -82,7 +101,6 @@ def parse_number(value: str, field_name: str, row_id: str) -> float:
         raise ValidationError(f"[{row_id}] {field_name}='{value}' is not a valid number.")
     if n < 0 or n > 10:
         raise ValidationError(f"[{row_id}] {field_name}={n} out of allowed range 0..10.")
-    # Normalize -0.0 to 0.0
     if n == 0:
         n = 0.0
     return n
@@ -120,11 +138,9 @@ def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
     if raw == "":
         return []
 
-    # Split by known prefixes in order of appearance.
-    # We scan the string and carve segments starting at each prefix occurrence.
     lower = raw.lower()
-
     positions: List[Tuple[int, str]] = []
+
     for prefix in NOTE_PREFIXES:
         p = prefix.lower()
         start = 0
@@ -136,8 +152,6 @@ def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
             start = idx + len(p)
 
     if not positions:
-        # No recognized prefix; treat as generic conditional_note to avoid losing info,
-        # but keep it explicit (still parseable).
         return [{"type": "conditional_note", "text": raw}]
 
     positions.sort(key=lambda t: t[0])
@@ -160,7 +174,6 @@ def validate_headers(headers: List[str]) -> None:
     if missing:
         raise ValidationError(f"Missing required headers: {missing}")
     if extra:
-        # Not fatal, but you said strict validation; keep this strict.
         raise ValidationError(f"Unexpected extra headers: {extra}")
 
 
@@ -168,6 +181,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
     reader = csv.DictReader(StringIO(csv_text))
     if reader.fieldnames is None:
         raise ValidationError("CSV has no header row.")
+
     headers = [h.strip() for h in reader.fieldnames]
     validate_headers(headers)
 
@@ -207,16 +221,15 @@ def parse_rows(csv_text: str) -> List[CardRow]:
             "other": parse_number(row.get("other_multiplier") or "", "other_multiplier", row_id),
         }
 
-        # Additional safety rules:
-        # - If it's a no-rewards card (all zeros), ensure it's explicitly noted.
+        notes_list = parse_notes(row.get("notes") or "")
+
+        # Additional safety rule: if all zeros, notes should clearly indicate no rewards
         if all(multipliers[k] == 0.0 for k in multipliers):
-            notes_list = parse_notes(row.get("notes") or "")
-            if not any(n["type"] == "conditional_note" and "no rewards" in n["text"].lower() for n in notes_list):
-                raise ValidationError(
-                    f"[{row_id}] all multipliers are 0 but notes does not clearly say 'No rewards'."
-                )
-        else:
-            notes_list = parse_notes(row.get("notes") or "")
+            if not any(
+                n["type"] == "conditional_note" and "no rewards" in n["text"].lower()
+                for n in notes_list
+            ):
+                raise ValidationError(f"[{row_id}] all multipliers are 0 but notes does not clearly say 'No rewards'.")
 
         cards.append(
             CardRow(
@@ -257,11 +270,9 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
     }
 
 
-
 def write_json(path: str, data: Dict[str, Any]) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=False)
-        f.write("\n")
+    # Stable formatting + newline at end
+    Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def compute_sha256_file(path: str) -> str:
@@ -284,26 +295,32 @@ def main() -> int:
     cards_json = build_cards_json(cards)
 
     out_dir = args.out_dir.rstrip("/")
-
     cards_json_path = f"{out_dir}/cards.json"
     cards_version_path = f"{out_dir}/cards_version.json"
 
-    # Write cards.json first
+    # 1) Write cards.json deterministically
     write_json(cards_json_path, cards_json)
 
-    # Deterministic version from file content
+    # 2) Compute deterministic version from cards.json bytes
     digest = compute_sha256_file(cards_json_path)
     version = f"sha256:{digest[:12]}"
 
-    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    # 3) Only rewrite cards_version.json when version changes
+    existing = _read_json_if_exists(cards_version_path)
+    existing_version = existing.get("version") if isinstance(existing, dict) else None
+
+    if existing_version == version:
+        print(f"OK: wrote {cards_json_path}")
+        print(f"OK: cards_version.json unchanged (version={version})")
+        print(f"version={version} cards_count={len(cards)}")
+        return 0
+
     cards_version = {
         "schema_version": 1,
         "version": version,
-        "generated_at": generated_at,
+        "generated_at": _utc_now_z(),
         "cards_count": len(cards),
     }
-
-
     write_json(cards_version_path, cards_version)
 
     print(f"OK: wrote {cards_json_path}")
