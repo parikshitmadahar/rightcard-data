@@ -9,11 +9,11 @@
       "card_name": "Chase Sapphire Preferred",
       "issuer": "Chase",
       "issuer_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
-      "verified_date": "2025-12-17",
+      "verified_date": "2025-12-23",
       "reward_currency": "points",
       "multipliers": {
         "dining": 3.0,
-        "grocery": 3.0,
+        "grocery": 1.0,
         "gas": 1.0,
         "travel": 2.0,
         "other": 1.0
@@ -22,6 +22,10 @@
         {
           "type": "portal_note",
           "text": "Up to 5x travel when booked via Chase Travel portal"
+        },
+        {
+          "type": "conditional_note",
+          "text": "3x grocery points exclude Target, Walmart, and wholesale clubs and apply to online grocery only. | 5x travel points only for travel booked through Chase Travel portal; other travel earns 2x"
         }
       ]
     },
@@ -30,19 +34,27 @@
       "card_name": "American Express® Gold Card",
       "issuer": "American Express",
       "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
-      "verified_date": "2025-12-17",
+      "verified_date": "2025-12-26",
       "reward_currency": "points",
       "multipliers": {
         "dining": 4.0,
         "grocery": 4.0,
         "gas": 1.0,
-        "travel": 1.0,
+        "travel": 3.0,
         "other": 1.0
       },
       "notes": [
         {
           "type": "conditional_note",
-          "text": "3x on flights (airfare) when booked directly with airlines or via Amex Travel (not modeled as Travel category)"
+          "text": "3x on flights (airfare) when booked directly with airlines or via Amex Travel"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4x points on Restaurants Worldwide up to $50K in purchases per calendar year"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4x points on U.S. supermarkets"
         }
       ]
     },
@@ -51,7 +63,7 @@
       "card_name": "Citi Custom Cash",
       "issuer": "Citi",
       "issuer_url": "https://www.citi.com/credit-cards/citi-custom-cash-credit-card",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-23",
       "reward_currency": "points",
       "multipliers": {
         "dining": 1.0,
@@ -63,7 +75,7 @@
       "notes": [
         {
           "type": "conditional_note",
-          "text": "Earns 5% in top eligible category each billing cycle (up to cap); not modeled in base logic"
+          "text": "5% cash back applied only up to $500 spent per billing cycle per top eligible spend category | 5% category is dynamically the top eligible category each billing cycle"
         }
       ]
     },
@@ -93,7 +105,7 @@
       "card_name": "Bank of America Customized Cash",
       "issuer": "Bank of America",
       "issuer_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "cashback",
       "multipliers": {
         "dining": 1.0,
@@ -106,6 +118,10 @@
         {
           "type": "conditional_note",
           "text": "User selects one 3% category (caps apply; not modeled)"
+        },
+        {
+          "type": "conditional_note",
+          "text": "2% cash back applies at grocery stores and wholesale clubs"
         }
       ]
     },
@@ -135,7 +151,7 @@
       "card_name": "American Express Blue Cash Preferred®",
       "issuer": "American Express",
       "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "cashback",
       "multipliers": {
         "dining": 1.0,
@@ -148,6 +164,10 @@
         {
           "type": "conditional_note",
           "text": "6% U.S. supermarkets (cap). 3% U.S. gas stations (cap). travel_multiplier maps issuer Transit (rideshare, taxis, parking, tolls, trains, buses) to Travel"
+        },
+        {
+          "type": "conditional_note",
+          "text": "6% cash back at U.S. Supermarkets applies on up to $6K per year in purchases"
         }
       ]
     },
@@ -177,7 +197,7 @@
       "card_name": "Amazon Prime Visa",
       "issuer": "Chase",
       "issuer_url": "https://www.amazon.com/Prime-Visa/dp/BT00LN946S",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "cashback",
       "multipliers": {
         "dining": 2.0,
@@ -190,6 +210,10 @@
         {
           "type": "portal_note",
           "text": "Earn unlimited 5% back on Chase Travel purchases, 5% on Amazon & whole foods with an eligible Prime membership"
+        },
+        {
+          "type": "conditional_note",
+          "text": "5% back rates require an eligible Prime membership"
         }
       ]
     },
@@ -198,7 +222,7 @@
       "card_name": "American Express Blue Cash Everyday®",
       "issuer": "American Express",
       "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "cashback",
       "multipliers": {
         "dining": 1.0,
@@ -211,6 +235,10 @@
         {
           "type": "conditional_note",
           "text": "Annual caps apply; online retail not modeled"
+        },
+        {
+          "type": "conditional_note",
+          "text": "3% cash back at U.S. Supermarkets, U.S. Gas Stations, and on U.S. Online Retail purchases, on up to $6K in purchases in each category per year"
         }
       ]
     },
@@ -345,7 +373,7 @@
       "card_name": "Capital One Venture X",
       "issuer": "Capital One",
       "issuer_url": "https://www.capitalone.com/credit-cards/venture-x/",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "miles",
       "multipliers": {
         "dining": 2.0,
@@ -358,6 +386,10 @@
         {
           "type": "portal_note",
           "text": "10x Miles on hotels & rental cars , & 5x Miles on flights and vacation rentals booked through Capital One Travel"
+        },
+        {
+          "type": "conditional_note",
+          "text": "10x miles earn requires booking through Capital One Travel portal"
         }
       ]
     },
@@ -366,7 +398,7 @@
       "card_name": "Wells Fargo Autograph",
       "issuer": "Wells Fargo",
       "issuer_url": "https://creditcards.wellsfargo.com/autograph-visa-credit-card/?sub_channel=WEB&vendor_code=WF",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "points",
       "multipliers": {
         "dining": 3.0,
@@ -377,8 +409,12 @@
       },
       "notes": [
         {
-          "type": "portal_note",
-          "text": "3x on phone plans and streaming services"
+          "type": "conditional_note",
+          "text": "3x points earned on transit includes passenger railway, taxis, limousines, ferries, toll bridges and highways, parking lots and garages"
+        },
+        {
+          "type": "conditional_note",
+          "text": "3x points earned on travel includes airline, hotel/motel, timeshare, vehicle/auto rental, cruise lines, travel agencies, discount travel sites, and campgrounds"
         }
       ]
     },
@@ -387,7 +423,7 @@
       "card_name": "United Explorer",
       "issuer": "Chase",
       "issuer_url": "https://www.chase.com/personal/credit-cards/united/united-explorer-card/earn-rewards",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "miles",
       "multipliers": {
         "dining": 2.0,
@@ -400,6 +436,10 @@
         {
           "type": "portal_note",
           "text": "5 miles per dollar spent on hotel stays purchased through United Hotels & 2 miles per dollar spent on purchases from United"
+        },
+        {
+          "type": "conditional_note",
+          "text": "2 miles per $1 spent on hotel stays when booked directly with the hotel"
         }
       ]
     },
@@ -475,7 +515,7 @@
       "card_name": "Chase Sapphire Reserve",
       "issuer": "Chase",
       "issuer_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "points",
       "multipliers": {
         "dining": 3.0,
@@ -488,6 +528,10 @@
         {
           "type": "portal_note",
           "text": "Up to 8x points when booked via Chase Travel portal (credits not modeled)"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4x points on flights and hotels booked direct"
         }
       ]
     },
@@ -512,7 +556,7 @@
       "card_name": "U.S. Bank Altitude® Go Visa Signature®",
       "issuer": "U.S. Bank",
       "issuer_url": "https://www.usbank.com/credit-cards/altitude-go-visa-signature-credit-card.html",
-      "verified_date": "2025-12-18",
+      "verified_date": "2025-12-26",
       "reward_currency": "points",
       "multipliers": {
         "dining": 4.0,
@@ -525,6 +569,14 @@
         {
           "type": "conditional_note",
           "text": "2x on eligible streaming services (not modeled)"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4x points on dining, takeout and restaurant delivery on your first $2,000 each quarter"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Excludes discount stores/supercenters and wholesale clubs for grocery and gas earn"
         }
       ]
     }
