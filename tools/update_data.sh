@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+
+# SAFETY LATCH: prevent accidental production updates
+# To run for real: RELEASE=1 CONFIRM_PUBLISH=YES ./update_data.sh
+if [[ "${RELEASE:-0}" != "1" || "${CONFIRM_PUBLISH:-}" != "YES" ]]; then
+  echo "Blocked: update_data.sh would publish to production (git push / GitHub Pages)."
+  echo "If you intend to publish, run: RELEASE=1 CONFIRM_PUBLISH=YES ./tools/update_data.sh"
+
+  exit 1
+fi
+
+
 # Run from repo root
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 cd "$REPO_ROOT"
 
 # Always sync with remote before making changes

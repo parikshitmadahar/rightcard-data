@@ -47,6 +47,15 @@ REQUIRED_HEADERS = [
     "notes",
 ]
 
+# Columns that may exist in the Canonical_Cards sheet for internal workflows
+# but are ignored by the JSON generator (must not affect output schema).
+IGNORED_HEADERS = {
+    "ai_check_date (when verifier last checked this card)",
+    "ai_status",
+    "ai_confidence_overall",
+}
+
+
 ALLOWED_REWARD_CURRENCY = {"points", "miles", "cashback"}
 NOTE_PREFIXES = ("portal_note:", "conditional_note:")
 
@@ -160,7 +169,7 @@ def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
     for i, (pos, pfx) in enumerate(positions):
         seg_start = pos + len(pfx)
         seg_end = positions[i + 1][0] if i + 1 < len(positions) else len(raw)
-        text = raw[seg_start:seg_end].strip(" \t\r\n.;")
+        text = raw[seg_start:seg_end].strip(" \t\r\n.;|")
         if text:
             note_type = "portal_note" if pfx.startswith("portal_note") else "conditional_note"
             notes.append({"type": note_type, "text": text})
@@ -169,12 +178,17 @@ def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
 
 
 def validate_headers(headers: List[str]) -> None:
-    missing = [h for h in REQUIRED_HEADERS if h not in headers]
-    extra = [h for h in headers if h not in REQUIRED_HEADERS]
+    # Ignore internal workflow/metadata headers
+    effective_headers = [h for h in headers if h not in IGNORED_HEADERS]
+
+    missing = [h for h in REQUIRED_HEADERS if h not in effective_headers]
+    extra = [h for h in effective_headers if h not in REQUIRED_HEADERS]
+
     if missing:
         raise ValidationError(f"Missing required headers: {missing}")
     if extra:
         raise ValidationError(f"Unexpected extra headers: {extra}")
+
 
 
 def parse_rows(csv_text: str) -> List[CardRow]:
