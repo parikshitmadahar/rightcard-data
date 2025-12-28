@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "category_mapping": {
     "travel_includes_transit": true
   },
@@ -13,9 +13,17 @@
       "reward_currency": "points",
       "multipliers": {
         "dining": 3.0,
-        "grocery": 1.0,
+        "grocery": {
+          "default": 1.0,
+          "in_store": 1.0,
+          "online": 3.0
+        },
         "gas": 1.0,
-        "travel": 2.0,
+        "travel": {
+          "default": 2.0,
+          "flight": 2.0,
+          "hotel": 2.0
+        },
         "other": 1.0
       },
       "notes": [
@@ -38,9 +46,17 @@
       "reward_currency": "points",
       "multipliers": {
         "dining": 4.0,
-        "grocery": 4.0,
+        "grocery": {
+          "default": 4.0,
+          "in_store": 4.0,
+          "online": 1.0
+        },
         "gas": 1.0,
-        "travel": 3.0,
+        "travel": {
+          "default": 1.0,
+          "flight": 3.0,
+          "hotel": 1.0
+        },
         "other": 1.0
       },
       "notes": [
@@ -67,9 +83,17 @@
       "reward_currency": "points",
       "multipliers": {
         "dining": 1.0,
-        "grocery": 1.0,
+        "grocery": {
+          "default": 1.0,
+          "in_store": 1.0,
+          "online": 1.0
+        },
         "gas": 1.0,
-        "travel": 1.0,
+        "travel": {
+          "default": 1.0,
+          "flight": 1.0,
+          "hotel": 1.0
+        },
         "other": 1.0
       },
       "notes": [

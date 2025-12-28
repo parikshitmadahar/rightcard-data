@@ -5,7 +5,7 @@ RightCard - Canonical_Cards CSV -> validated cards.json + cards_version.json
 Usage:
   python3 tools/generate_cards_json.py \
     --csv-url "https://docs.google.com/.../output=csv" \
-    --out-dir "./data"
+    --out-dir "."
 
 Outputs:
   cards.json
@@ -15,6 +15,11 @@ Key behavior:
 - cards.json is deterministic for identical CSV input.
 - cards_version.json is ONLY rewritten when cards.json content changes (version changes),
   so running the script without sheet changes will NOT create noise commits.
+
+Schema v2:
+- multipliers.grocery and multipliers.travel can now be either:
+  - number (legacy scalar), or
+  - object {"default": <number>, "<sub>": <number>, ...}
 """
 
 from __future__ import annotations
@@ -28,9 +33,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.request import Request, urlopen
 
+
+SCHEMA_VERSION = 2
 
 REQUIRED_HEADERS = [
     "card_key",
@@ -45,6 +52,16 @@ REQUIRED_HEADERS = [
     "other_multiplier",
     "reward_currency",
     "notes",
+]
+
+# Optional new sub-category columns (v1 taxonomy)
+OPTIONAL_SUBCATEGORY_HEADERS = [
+    "grocery_default",
+    "grocery_online",
+    "grocery_in_store",
+    "travel_default",
+    "travel_flight",
+    "travel_hotel",
 ]
 
 # Columns that may exist in the Canonical_Cards sheet for internal workflows
@@ -63,6 +80,9 @@ NOTE_PREFIXES = ("portal_note:", "conditional_note:")
 CATEGORY_MAPPING = {"travel_includes_transit": True}
 
 
+MultiplierValue = Union[float, Dict[str, float]]
+
+
 @dataclass(frozen=True)
 class CardRow:
     card_key: str
@@ -71,7 +91,7 @@ class CardRow:
     issuer_url: str
     verified_date: str
     reward_currency: str
-    multipliers: Dict[str, float]
+    multipliers: Dict[str, MultiplierValue]
     notes: List[Dict[str, str]]
 
 
@@ -101,7 +121,7 @@ def fetch_csv_text(csv_url: str, timeout_seconds: int = 30) -> str:
 
 
 def parse_number(value: str, field_name: str, row_id: str) -> float:
-    v = value.strip()
+    v = (value or "").strip()
     if v == "":
         raise ValidationError(f"[{row_id}] {field_name} is blank (must be a number).")
     try:
@@ -115,8 +135,18 @@ def parse_number(value: str, field_name: str, row_id: str) -> float:
     return n
 
 
+def parse_optional_number(value: str) -> Optional[float]:
+    v = (value or "").strip()
+    if v == "":
+        return None
+    try:
+        return float(v)
+    except ValueError:
+        raise ValidationError(f"Invalid number: '{value}'")
+
+
 def validate_date_yyyy_mm_dd(value: str, row_id: str) -> str:
-    v = value.strip()
+    v = (value or "").strip()
     try:
         dt = datetime.strptime(v, "%Y-%m-%d").date()
     except ValueError:
@@ -128,7 +158,7 @@ def validate_date_yyyy_mm_dd(value: str, row_id: str) -> str:
 
 
 def validate_url_https(value: str, field_name: str, row_id: str) -> str:
-    v = value.strip()
+    v = (value or "").strip()
     if not v.startswith("https://"):
         raise ValidationError(f"[{row_id}] {field_name} must start with https:// (got '{value}').")
     return v
@@ -181,14 +211,84 @@ def validate_headers(headers: List[str]) -> None:
     # Ignore internal workflow/metadata headers
     effective_headers = [h for h in headers if h not in IGNORED_HEADERS]
 
+    # Required base headers must exist (sub-category headers are optional)
     missing = [h for h in REQUIRED_HEADERS if h not in effective_headers]
-    extra = [h for h in effective_headers if h not in REQUIRED_HEADERS]
-
     if missing:
         raise ValidationError(f"Missing required headers: {missing}")
+
+    # Validate there are no unexpected columns other than:
+    # - required headers
+    # - optional sub-category headers
+    allowed = set(REQUIRED_HEADERS) | set(OPTIONAL_SUBCATEGORY_HEADERS)
+    extra = [h for h in effective_headers if h not in allowed]
     if extra:
         raise ValidationError(f"Unexpected extra headers: {extra}")
 
+
+def build_subcategory_multiplier(
+    row: Dict[str, str],
+    *,
+    row_id: str,
+    legacy_key: str,
+    default_key: str,
+    sub_keys: List[str],
+) -> MultiplierValue:
+    """
+    Builds grocery/travel multiplier structure.
+
+    Resolution rules:
+    1) If any sub_key is present (non-empty), emit an object:
+         {"default": <resolved_default>, "<sub>": <val>, ...}
+       where resolved_default uses:
+         - default_key if provided, else legacy_key.
+       If still missing, default falls back to legacy scalar value already validated elsewhere,
+       and if that is missing (shouldn't happen), fallback to 1.0 conservatively.
+
+    2) If no sub_key is present:
+       - If default_key is provided (non-empty), emit {"default": <default>}
+       - Else emit legacy scalar (float) from legacy_key
+    """
+    # Legacy scalar is always required by REQUIRED_HEADERS and validated elsewhere.
+    legacy_scalar = parse_number(row.get(legacy_key) or "", legacy_key, row_id)
+
+    default_val = parse_optional_number(row.get(default_key) or "")
+    sub_vals: Dict[str, float] = {}
+    any_sub_present = False
+
+    for sk in sub_keys:
+        v = parse_optional_number(row.get(sk) or "")
+        if v is not None:
+            any_sub_present = True
+            # "grocery_online" -> "online", "travel_hotel" -> "hotel"
+            # sk like "grocery_in_store" or "travel_hotel"
+            if sk.startswith("grocery_"):
+                sub_name = sk[len("grocery_"):]
+            elif sk.startswith("travel_"):
+                sub_name = sk[len("travel_"):]
+            else:
+                sub_name = sk
+
+            if v < 0 or v > 10:
+                raise ValidationError(f"[{row_id}] {sk}={v} out of allowed range 0..10.")
+            sub_vals[sub_name] = v
+
+    if any_sub_present:
+        resolved_default = default_val if default_val is not None else legacy_scalar
+        if resolved_default is None:
+            resolved_default = 1.0
+        out: Dict[str, float] = {"default": float(resolved_default)}
+        for name in sorted(sub_vals.keys()):
+            out[name] = float(sub_vals[name])
+        return out
+
+    # No subcategory fields present; emit default object only if explicitly set.
+    if default_val is not None:
+        if default_val < 0 or default_val > 10:
+            raise ValidationError(f"[{row_id}] {default_key}={default_val} out of allowed range 0..10.")
+        return {"default": float(default_val)}
+
+    # Pure legacy fallback
+    return float(legacy_scalar)
 
 
 def parse_rows(csv_text: str) -> List[CardRow]:
@@ -227,18 +327,54 @@ def parse_rows(csv_text: str) -> List[CardRow]:
                 f"[{row_id}] reward_currency='{reward_currency}' not in {sorted(ALLOWED_REWARD_CURRENCY)}."
             )
 
-        multipliers = {
-            "dining": parse_number(row.get("dining_multiplier") or "", "dining_multiplier", row_id),
-            "grocery": parse_number(row.get("grocery_multiplier") or "", "grocery_multiplier", row_id),
-            "gas": parse_number(row.get("gas_multiplier") or "", "gas_multiplier", row_id),
-            "travel": parse_number(row.get("travel_multiplier") or "", "travel_multiplier", row_id),
-            "other": parse_number(row.get("other_multiplier") or "", "other_multiplier", row_id),
+        # Base categories remain scalar floats (legacy)
+        dining = parse_number(row.get("dining_multiplier") or "", "dining_multiplier", row_id)
+        gas = parse_number(row.get("gas_multiplier") or "", "gas_multiplier", row_id)
+        other = parse_number(row.get("other_multiplier") or "", "other_multiplier", row_id)
+
+        # Grocery + Travel: subcategory-aware
+        grocery = build_subcategory_multiplier(
+            row,
+            row_id=row_id,
+            legacy_key="grocery_multiplier",
+            default_key="grocery_default",
+            sub_keys=["grocery_online", "grocery_in_store"],
+        )
+        travel = build_subcategory_multiplier(
+            row,
+            row_id=row_id,
+            legacy_key="travel_multiplier",
+            default_key="travel_default",
+            sub_keys=["travel_flight", "travel_hotel"],
+        )
+
+        multipliers: Dict[str, MultiplierValue] = {
+            "dining": float(dining),
+            "grocery": grocery,
+            "gas": float(gas),
+            "travel": travel,
+            "other": float(other),
         }
 
         notes_list = parse_notes(row.get("notes") or "")
 
-        # Additional safety rule: if all zeros, notes should clearly indicate no rewards
-        if all(multipliers[k] == 0.0 for k in multipliers):
+        # Additional safety rule: if all legacy scalar categories are zero,
+        # notes should clearly indicate no rewards.
+        # (For grocery/travel objects, treat "default" as the comparable scalar if present.)
+        def _scalar_for_check(v: MultiplierValue) -> float:
+            if isinstance(v, dict):
+                return float(v.get("default", 0.0))
+            return float(v)
+
+        scalar_check = {
+            "dining": _scalar_for_check(multipliers["dining"]),
+            "grocery": _scalar_for_check(multipliers["grocery"]),
+            "gas": _scalar_for_check(multipliers["gas"]),
+            "travel": _scalar_for_check(multipliers["travel"]),
+            "other": _scalar_for_check(multipliers["other"]),
+        }
+
+        if all(scalar_check[k] == 0.0 for k in scalar_check):
             if not any(
                 n["type"] == "conditional_note" and "no rewards" in n["text"].lower()
                 for n in notes_list
@@ -265,8 +401,9 @@ def parse_rows(csv_text: str) -> List[CardRow]:
 
 
 def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
+    # Ensure deterministic order: cards are already in CSV order.
     return {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
         "category_mapping": CATEGORY_MAPPING,
         "cards": [
             {
@@ -300,7 +437,7 @@ def compute_sha256_file(path: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv-url", required=True, help="Published CSV URL for Canonical_Cards")
-    ap.add_argument("--out-dir", required=True, help="Output directory for cards.json and cards_version.json")
+    ap.add_argument("--out-dir", default=".", help="Output directory for cards.json and cards_version.json (default: .)")
     args = ap.parse_args()
 
     csv_text = fetch_csv_text(args.csv_url)
@@ -309,8 +446,11 @@ def main() -> int:
     cards_json = build_cards_json(cards)
 
     out_dir = args.out_dir.rstrip("/")
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+
     cards_json_path = f"{out_dir}/cards.json"
     cards_version_path = f"{out_dir}/cards_version.json"
+
 
     # 1) Write cards.json deterministically
     write_json(cards_json_path, cards_json)
@@ -330,7 +470,7 @@ def main() -> int:
         return 0
 
     cards_version = {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
         "version": version,
         "generated_at": _utc_now_z(),
         "cards_count": len(cards),
