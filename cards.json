@@ -576,14 +576,119 @@
       "notes": []
     },
     {
-      "card_key": "us_bank_altitude_go",
-      "card_name": "U.S. Bank Altitude® Go Visa Signature®",
-      "issuer": "U.S. Bank",
-      "issuer_url": "https://www.usbank.com/credit-cards/altitude-go-visa-signature-credit-card.html",
-      "verified_date": "2025-12-26",
+      "card_key": "capitalone_savorone",
+      "card_name": "Capital One SavorOne",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/savorone/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 3.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 5% cash back on hotels and rental cars booked through Capital One Travel"
+        }
+      ]
+    },
+    {
+      "card_key": "capitalone_ventureone",
+      "card_name": "Capital One VentureOne",
+      "issuer": "Capital One",
+      "issuer_url": "https://www.capitalone.com/credit-cards/ventureone/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 1.25,
+        "grocery": 1.25,
+        "gas": 1.25,
+        "travel": 1.25,
+        "other": 1.25
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "5x miles on hotels and rental cars booked through Capital One Travel"
+        }
+      ]
+    },
+    {
+      "card_key": "bofa_premium_rewards",
+      "card_name": "Bank of America Premium Rewards",
+      "issuer": "Bank of America",
+      "issuer_url": "https://www.bankofamerica.com/credit-cards/products/premium-rewards-credit-card/",
+      "verified_date": "2025-12-27",
       "reward_currency": "points",
       "multipliers": {
-        "dining": 4.0,
+        "dining": 2.0,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 2.0,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Preferred Rewards bonus tiers not modeled"
+        }
+      ]
+    },
+    {
+      "card_key": "bofa_travel_rewards",
+      "card_name": "Bank of America Travel Rewards",
+      "issuer": "Bank of America",
+      "issuer_url": "https://www.bankofamerica.com/credit-cards/products/travel-rewards-credit-card/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Preferred Rewards bonus tiers not modeled"
+        }
+      ]
+    },
+    {
+      "card_key": "bofa_unlimited_rewards",
+      "card_name": "Bank of America Unlimited Cash Rewards",
+      "issuer": "Bank of America",
+      "issuer_url": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Preferred Rewards bonus tiers not modeled"
+        }
+      ]
+    },
+    {
+      "card_key": "usbank_cash_plus",
+      "card_name": "U.S. Bank Cash+ Visa Signature",
+      "issuer": "U.S. Bank",
+      "issuer_url": "https://www.usbank.com/credit-cards/cash-plus-visa-signature-credit-card.html",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.0,
         "grocery": 1.0,
         "gas": 1.0,
         "travel": 1.0,
@@ -592,15 +697,392 @@
       "notes": [
         {
           "type": "conditional_note",
-          "text": "2x on eligible streaming services (not modeled)"
-        },
+          "text": "5% categories require user selection and activation (not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "usbank_altitude_reserve",
+      "card_name": "U.S. Bank Altitude Reserve",
+      "issuer": "U.S. Bank",
+      "issuer_url": "https://www.usbank.com/credit-cards/altitude-reserve-visa-infinite-credit-card.html",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
         {
           "type": "conditional_note",
-          "text": "4x points on dining, takeout and restaurant delivery on your first $2,000 each quarter"
-        },
+          "text": "Higher earn requires mobile wallet usage (not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "usbank_altitude_connect",
+      "card_name": "U.S. Bank Altitude Connect",
+      "issuer": "U.S. Bank",
+      "issuer_url": "https://www.usbank.com/credit-cards/altitude-connect-visa-signature-credit-card.html",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 1.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
         {
           "type": "conditional_note",
-          "text": "Excludes discount stores/supercenters and wholesale clubs for grocery and gas earn"
+          "text": "Bonus categories and caps not modeled"
+        }
+      ]
+    },
+    {
+      "card_key": "fidelity_rewards",
+      "card_name": "Fidelity Rewards Visa Signature",
+      "issuer": "Fidelity",
+      "issuer_url": "https://www.fidelity.com/go/visa-signature-rewards-1502",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Rewards redemption requires Fidelity account"
+        }
+      ]
+    },
+    {
+      "card_key": "paypal_cashback",
+      "card_name": "PayPal Cashback Mastercard",
+      "issuer": "PayPal",
+      "issuer_url": "https://www.paypal.com/us/digital-wallet/manage-money/paypal-cashback-mastercard",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "3% cash back applies only to PayPal purchases"
+        }
+      ]
+    },
+    {
+      "card_key": "citi_rewards_plus",
+      "card_name": "Citi Rewards+",
+      "issuer": "Citi",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-rewards-plus-credit-card",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 2.0,
+        "travel": 2.0,
+        "other": 2.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Points rounding and redemption bonuses not modeled"
+        }
+      ]
+    },
+    {
+      "card_key": "chase_freedom_rise",
+      "card_name": "Chase Freedom Rise",
+      "issuer": "Chase",
+      "issuer_url": "https://www.chase.com/personal/credit-cards/freedom/rise",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 1.5,
+        "grocery": 1.5,
+        "gas": 1.5,
+        "travel": 1.5,
+        "other": 1.5
+      },
+      "notes": [
+        {
+          "type": "portal_note",
+          "text": "Up to 5x travel when booked via Chase Travel portal"
+        }
+      ]
+    },
+    {
+      "card_key": "delta_skymiles_gold",
+      "card_name": "Delta SkyMiles Gold American Express",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-gold-american-express-card/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to Delta purchases only (not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "delta_skymiles_platinum",
+      "card_name": "Delta SkyMiles Platinum American Express",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-platinum/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 2.0,
+        "gas": 1.0,
+        "travel": {
+          "default": 1.0,
+          "hotel": 3.0
+        },
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to Delta purchases only (not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "southwest_plus",
+      "card_name": "Southwest Rapid Rewards Plus",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/southwest/plus",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Bonus earn applies to Southwest purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "southwest_priority",
+      "card_name": "Southwest Rapid Rewards Priority",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/southwest/priority",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Bonus earn applies to Southwest purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "united_gateway",
+      "card_name": "United Gateway Card",
+      "issuer": "Chase",
+      "issuer_url": "https://www.chase.com/personal/credit-cards/united/gateway-card",
+      "verified_date": "2025-12-27",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Bonus earn applies to United purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "aa_platinum_select",
+      "card_name": "AAdvantage Platinum Select",
+      "issuer": "American Airlines",
+      "issuer_url": "https://creditcards.aa.com/citi-platinum-select/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "miles",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 1.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Bonus earn applies to American Airlines purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "marriott_boundless",
+      "card_name": "Marriott Bonvoy Boundless",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/marriott/boundless",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 2.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to Marriott hotel spend only"
+        }
+      ]
+    },
+    {
+      "card_key": "world_of_hyatt",
+      "card_name": "World of Hyatt Credit Card",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/world-of-hyatt",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 2.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 2.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to Hyatt hotel spend only"
+        }
+      ]
+    },
+    {
+      "card_key": "hilton_surpass",
+      "card_name": "Hilton Honors Surpass",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors-surpass/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 2.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to Hilton purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "ihg_premier",
+      "card_name": "IHG One Rewards Premier",
+      "issuer": "Chase",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/premier",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 5.0,
+        "grocery": 3.0,
+        "gas": 5.0,
+        "travel": 5.0,
+        "other": 3.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Higher earn applies to IHG hotel purchases only"
+        }
+      ]
+    },
+    {
+      "card_key": "citi_costco_anywhere",
+      "card_name": "Citi Costco Anywhere Visa",
+      "issuer": "Citi",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-costco-anywhere-visa-credit-card",
+      "verified_date": "2025-12-27",
+      "reward_currency": "cashback",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 4.0,
+        "travel": {
+          "default": 1.0,
+          "flight": 3.0,
+          "hotel": 3.0
+        },
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Costco membership required; caps apply (not modeled)"
+        }
+      ]
+    },
+    {
+      "card_key": "amex_green",
+      "card_name": "American Express Green Card",
+      "issuer": "American Express",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/green/",
+      "verified_date": "2025-12-27",
+      "reward_currency": "points",
+      "multipliers": {
+        "dining": 3.0,
+        "grocery": 1.0,
+        "gas": 1.0,
+        "travel": 3.0,
+        "other": 1.0
+      },
+      "notes": [
+        {
+          "type": "conditional_note",
+          "text": "Travel and transit definitions are issuer-specific (not expanded)"
         }
       ]
     }
