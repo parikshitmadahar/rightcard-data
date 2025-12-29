@@ -171,7 +171,11 @@
       "reward_currency": "cashback",
       "multipliers": {
         "dining": 1.0,
-        "grocery": 6.0,
+        "grocery": {
+          "default": 6.0,
+          "in_store": 6.0,
+          "online": 1.0
+        },
         "gas": 3.0,
         "travel": 3.0,
         "other": 1.0
@@ -537,7 +541,11 @@
         "dining": 3.0,
         "grocery": 1.0,
         "gas": 1.0,
-        "travel": 3.0,
+        "travel": {
+          "default": 3.0,
+          "flight": 3.0,
+          "hotel": 3.0
+        },
         "other": 1.0
       },
       "notes": [
