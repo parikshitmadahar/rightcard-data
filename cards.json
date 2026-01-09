@@ -705,7 +705,7 @@
       "card_key": "usbank_altitude_reserve",
       "card_name": "U.S. Bank Altitude Reserve",
       "issuer": "U.S. Bank",
-      "issuer_url": "https://www.usbank.com/credit-cards/altitude-reserve-visa-infinite-credit-card.html",
+      "issuer_url": "https://rewards.usbank.com/benefits/card/AltitudeReserveBenefits",
       "verified_date": "2025-12-27",
       "reward_currency": "points",
       "multipliers": {
@@ -727,11 +727,11 @@
       "card_name": "U.S. Bank Altitude Connect",
       "issuer": "U.S. Bank",
       "issuer_url": "https://www.usbank.com/credit-cards/altitude-connect-visa-signature-credit-card.html",
-      "verified_date": "2025-12-27",
+      "verified_date": "2026-01-09",
       "reward_currency": "points",
       "multipliers": {
-        "dining": 1.0,
-        "grocery": 1.0,
+        "dining": 2.0,
+        "grocery": 2.0,
         "gas": 1.0,
         "travel": 1.0,
         "other": 1.0
@@ -740,6 +740,14 @@
         {
           "type": "conditional_note",
           "text": "Bonus categories and caps not modeled"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Excludes discount stores/supercenters and wholesale clubs for grocery and dining 2x points"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4x points at gas stations/EV charging stations on your first $1,000 each quarter"
         }
       ]
     },
@@ -789,7 +797,7 @@
       "card_key": "citi_rewards_plus",
       "card_name": "Citi Rewards+",
       "issuer": "Citi",
-      "issuer_url": "https://www.citi.com/credit-cards/citi-rewards-plus-credit-card",
+      "issuer_url": "https://www.citi.com/credit-cards/citi-strata-credit-card",
       "verified_date": "2025-12-27",
       "reward_currency": "points",
       "multipliers": {
@@ -832,11 +840,11 @@
       "card_name": "Delta SkyMiles Gold American Express",
       "issuer": "American Express",
       "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-gold-american-express-card/",
-      "verified_date": "2025-12-27",
+      "verified_date": "2026-01-09",
       "reward_currency": "miles",
       "multipliers": {
         "dining": 2.0,
-        "grocery": 2.0,
+        "grocery": 1.0,
         "gas": 1.0,
         "travel": 1.0,
         "other": 1.0
@@ -844,7 +852,11 @@
       "notes": [
         {
           "type": "conditional_note",
-          "text": "Higher earn applies to Delta purchases only (not modeled)"
+          "text": "Higher earn applies only to Delta purchases"
+        },
+        {
+          "type": "conditional_note",
+          "text": "2x miles on U.S. Supermarkets only"
         }
       ]
     },
@@ -852,7 +864,7 @@
       "card_key": "delta_skymiles_platinum",
       "card_name": "Delta SkyMiles Platinum American Express",
       "issuer": "American Express",
-      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-platinum/",
+      "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-platinum-american-express-card/",
       "verified_date": "2025-12-27",
       "reward_currency": "miles",
       "multipliers": {
@@ -897,7 +909,7 @@
       "card_key": "southwest_priority",
       "card_name": "Southwest Rapid Rewards Priority",
       "issuer": "Chase",
-      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/southwest/priority",
+      "issuer_url": "https://creditcards.chase.com/southwest/priority-credit-card",
       "verified_date": "2025-12-27",
       "reward_currency": "points",
       "multipliers": {
@@ -918,13 +930,13 @@
       "card_key": "united_gateway",
       "card_name": "United Gateway Card",
       "issuer": "Chase",
-      "issuer_url": "https://www.chase.com/personal/credit-cards/united/gateway-card",
-      "verified_date": "2025-12-27",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/united/united-gateway",
+      "verified_date": "2026-01-09",
       "reward_currency": "miles",
       "multipliers": {
         "dining": 2.0,
         "grocery": 1.0,
-        "gas": 1.0,
+        "gas": 2.0,
         "travel": 1.0,
         "other": 1.0
       },
@@ -932,6 +944,14 @@
         {
           "type": "conditional_note",
           "text": "Bonus earn applies to United purchases only"
+        },
+        {
+          "type": "conditional_note",
+          "text": "2x miles on local transit and commuting including ride share services, taxicabs, train tickets, tolls, and mass transit"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Earn 7x total miles on United flights: 5x miles on fare from United as a MileagePlus member, plus 2x miles on entire United purchase with the United Gateway Card"
         }
       ]
     },
@@ -939,7 +959,7 @@
       "card_key": "aa_platinum_select",
       "card_name": "AAdvantage Platinum Select",
       "issuer": "American Airlines",
-      "issuer_url": "https://creditcards.aa.com/citi-platinum-select/",
+      "issuer_url": "https://creditcards.aa.com/credit-cards/citi-platinum-card-american-airlines-direct/",
       "verified_date": "2025-12-27",
       "reward_currency": "miles",
       "multipliers": {
@@ -960,20 +980,28 @@
       "card_key": "marriott_boundless",
       "card_name": "Marriott Bonvoy Boundless",
       "issuer": "Chase",
-      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/marriott/boundless",
-      "verified_date": "2025-12-27",
+      "issuer_url": "https://creditcards.chase.com/travel-credit-cards/marriott-bonvoy/boundless",
+      "verified_date": "2026-01-09",
       "reward_currency": "points",
       "multipliers": {
-        "dining": 2.0,
+        "dining": 1.0,
         "grocery": 1.0,
         "gas": 1.0,
-        "travel": 2.0,
-        "other": 1.0
+        "travel": 1.0,
+        "other": 2.0
       },
       "notes": [
         {
           "type": "conditional_note",
-          "text": "Higher earn applies to Marriott hotel spend only"
+          "text": "Higher earn applies only to Marriott hotel purchases"
+        },
+        {
+          "type": "conditional_note",
+          "text": "3x points on dining includes restaurants, takeout, and eligible delivery services"
+        },
+        {
+          "type": "conditional_note",
+          "text": "3x points on dining, grocery, and gas combined capped at $6,000 annually; after that 2x points"
         }
       ]
     },
@@ -1003,7 +1031,7 @@
       "card_name": "Hilton Honors Surpass",
       "issuer": "American Express",
       "issuer_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors-surpass/",
-      "verified_date": "2025-12-27",
+      "verified_date": "2026-01-09",
       "reward_currency": "points",
       "multipliers": {
         "dining": 3.0,
@@ -1016,6 +1044,10 @@
         {
           "type": "conditional_note",
           "text": "Higher earn applies to Hilton purchases only"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Earn 12x Hilton Honors Bonus Points on purchases made directly with Hotels and Resorts within the Hilton portfolio"
         }
       ]
     },
@@ -1024,19 +1056,27 @@
       "card_name": "IHG One Rewards Premier",
       "issuer": "Chase",
       "issuer_url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/premier",
-      "verified_date": "2025-12-27",
+      "verified_date": "2026-01-09",
       "reward_currency": "points",
       "multipliers": {
         "dining": 5.0,
-        "grocery": 3.0,
+        "grocery": 1.0,
         "gas": 5.0,
-        "travel": 5.0,
+        "travel": 1.0,
         "other": 3.0
       },
       "notes": [
         {
           "type": "conditional_note",
-          "text": "Higher earn applies to IHG hotel purchases only"
+          "text": "Higher earn applies only to IHG hotel purchases; base earn elsewhere is 1x"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Up to 26x total points at IHG Hotels and Resorts: 10x points with this card plus up to 10x points from IHG and up to 6x points from IHG Platinum Elite status. Stays must be booked on a direct IHG booking channel such as ihg.com"
+        },
+        {
+          "type": "conditional_note",
+          "text": "Anniversary Free Night earned each account anniversary year with a current point redemption cap of 40,000 points"
         }
       ]
     },
@@ -1045,12 +1085,12 @@
       "card_name": "Citi Costco Anywhere Visa",
       "issuer": "Citi",
       "issuer_url": "https://www.citi.com/credit-cards/citi-costco-anywhere-visa-credit-card",
-      "verified_date": "2025-12-27",
+      "verified_date": "2026-01-09",
       "reward_currency": "cashback",
       "multipliers": {
-        "dining": 3.0,
+        "dining": 1.0,
         "grocery": 1.0,
-        "gas": 4.0,
+        "gas": 1.0,
         "travel": {
           "default": 1.0,
           "flight": 3.0,
@@ -1061,7 +1101,11 @@
       "notes": [
         {
           "type": "conditional_note",
-          "text": "Costco membership required; caps apply (not modeled)"
+          "text": "Higher earn applies to Costco and select categories; Costco membership required"
+        },
+        {
+          "type": "conditional_note",
+          "text": "4% cash back on gas is capped at $7,000 per year, then 1% thereafter"
         }
       ]
     },
