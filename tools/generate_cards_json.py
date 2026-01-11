@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 """
-RightCard - Canonical_Cards CSV -> validated cards.json + cards_version.json
+RightCard - Canonical CSVs -> validated cards.json + programs.json + program_quarters.json + cards_version.json
 
-Usage:
+Usage (new, recommended):
   python3 tools/generate_cards_json.py \
-    --csv-url "https://docs.google.com/.../output=csv" \
+    --cards-csv-url "https://docs.google.com/...Canonical_Cards...output=csv" \
+    --programs-csv-url "https://docs.google.com/...programs...output=csv" \
+    --program-quarters-csv-url "https://docs.google.com/...program_quarters...output=csv" \
     --out-dir "."
+
+Back-compat:
+  --csv-url is accepted as an alias for --cards-csv-url (cards only).
 
 Outputs:
   cards.json
+  programs.json
+  program_quarters.json
   cards_version.json
 
 Key behavior:
-- cards.json is deterministic for identical CSV input.
-- cards_version.json is ONLY rewritten when cards.json content changes (version changes),
-  so running the script without sheet changes will NOT create noise commits.
-
-Schema v2:
-- multipliers.grocery and multipliers.travel can now be either:
-  - number (legacy scalar), or
-  - object {"default": <number>, "<sub>": <number>, ...}
+- JSON outputs are deterministic for identical CSV inputs.
+- cards_version.json is ONLY rewritten when the combined data bundle content changes.
 """
 
 from __future__ import annotations
@@ -39,6 +40,9 @@ from urllib.request import Request, urlopen
 
 SCHEMA_VERSION = 2
 
+# -------------------------
+# Canonical Cards schema
+# -------------------------
 REQUIRED_HEADERS = [
     "card_key",
     "card_name",
@@ -54,7 +58,6 @@ REQUIRED_HEADERS = [
     "notes",
 ]
 
-# Optional new sub-category columns (v1 taxonomy)
 OPTIONAL_SUBCATEGORY_HEADERS = [
     "grocery_default",
     "grocery_online",
@@ -64,21 +67,22 @@ OPTIONAL_SUBCATEGORY_HEADERS = [
     "travel_hotel",
 ]
 
-# Columns that may exist in the Canonical_Cards sheet for internal workflows
-# but are ignored by the JSON generator (must not affect output schema).
+# NEW: Optional column in Canonical_Cards to link rotating programs
+OPTIONAL_PROGRAM_LINKS_HEADERS = [
+    "program_links",
+]
+
 IGNORED_HEADERS = {
     "ai_check_date (when verifier last checked this card)",
     "ai_status",
     "ai_confidence_overall",
 }
 
-
 ALLOWED_REWARD_CURRENCY = {"points", "miles", "cashback"}
 NOTE_PREFIXES = ("portal_note:", "conditional_note:")
 
 # Locked mapping decision from Step 6.1
 CATEGORY_MAPPING = {"travel_includes_transit": True}
-
 
 MultiplierValue = Union[float, Dict[str, float]]
 
@@ -93,6 +97,35 @@ class CardRow:
     reward_currency: str
     multipliers: Dict[str, MultiplierValue]
     notes: List[Dict[str, str]]
+    program_links: List[str]
+
+
+# -------------------------
+# Programs schema
+# -------------------------
+PROGRAMS_REQUIRED_HEADERS = [
+    "program_key",
+    "program_name",
+    "issuer",
+    "source_url",
+    "requires_activation",
+    "cap_amount",
+    "cap_period",
+    "base_rate",
+    "bonus_rate",
+    "notes",
+    "status",
+    "last_verified",
+]
+
+PROGRAM_QUARTERS_REQUIRED_HEADERS = [
+    "program_key",
+    "start_date",
+    "end_date",
+    "category",
+    "status",
+    "last_verified",
+]
 
 
 class ValidationError(Exception):
@@ -145,15 +178,25 @@ def parse_optional_number(value: str) -> Optional[float]:
         raise ValidationError(f"Invalid number: '{value}'")
 
 
-def validate_date_yyyy_mm_dd(value: str, row_id: str) -> str:
+def parse_optional_int(value: str) -> Optional[int]:
+    v = (value or "").strip()
+    if v == "":
+        return None
+    try:
+        return int(float(v))
+    except ValueError:
+        raise ValidationError(f"Invalid integer: '{value}'")
+
+
+def validate_date_yyyy_mm_dd(value: str, field_name: str, row_id: str) -> str:
     v = (value or "").strip()
     try:
         dt = datetime.strptime(v, "%Y-%m-%d").date()
     except ValueError:
-        raise ValidationError(f"[{row_id}] verified_date='{value}' must be YYYY-MM-DD.")
+        raise ValidationError(f"[{row_id}] {field_name}='{value}' must be YYYY-MM-DD.")
     today = datetime.now(timezone.utc).date()
-    if dt > today:
-        raise ValidationError(f"[{row_id}] verified_date='{v}' is in the future.")
+    if field_name == "verified_date" and dt > today:
+        raise ValidationError(f"[{row_id}] {field_name}='{v}' is in the future.")
     return v
 
 
@@ -164,15 +207,33 @@ def validate_url_https(value: str, field_name: str, row_id: str) -> str:
     return v
 
 
+def parse_bool_true_false(value: str, field_name: str, row_id: str) -> bool:
+    v = (value or "").strip().lower()
+    if v in {"true", "t", "yes", "y", "1"}:
+        return True
+    if v in {"false", "f", "no", "n", "0"}:
+        return False
+    raise ValidationError(f"[{row_id}] {field_name} must be TRUE/FALSE (got '{value}').")
+
+
+def parse_program_links(cell: str) -> List[str]:
+    """
+    Comma-separated list of program_keys.
+    Examples:
+      "" -> []
+      "discover_5pct_rotating" -> ["discover_5pct_rotating"]
+      "discover_5pct_rotating, chase_5pct_rotating" -> [...]
+    """
+    raw = (cell or "").strip()
+    if raw == "":
+        return []
+    parts = [p.strip() for p in raw.split(",")]
+    out = [p for p in parts if p]
+    # deterministic order
+    return sorted(set(out))
+
+
 def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
-    """
-    Accepts:
-      - empty -> []
-      - 'portal_note: ...'
-      - 'conditional_note: ...'
-      - both in same cell, separated by anything, as long as prefixes exist
-    Produces structured list: [{"type":"portal_note","text":"..."} ...]
-    """
     raw = (notes_cell or "").strip()
     if raw == "":
         return []
@@ -208,18 +269,17 @@ def parse_notes(notes_cell: str) -> List[Dict[str, str]]:
 
 
 def validate_headers(headers: List[str]) -> None:
-    # Ignore internal workflow/metadata headers
     effective_headers = [h for h in headers if h not in IGNORED_HEADERS]
 
-    # Required base headers must exist (sub-category headers are optional)
     missing = [h for h in REQUIRED_HEADERS if h not in effective_headers]
     if missing:
         raise ValidationError(f"Missing required headers: {missing}")
 
-    # Validate there are no unexpected columns other than:
-    # - required headers
-    # - optional sub-category headers
-    allowed = set(REQUIRED_HEADERS) | set(OPTIONAL_SUBCATEGORY_HEADERS)
+    allowed = (
+        set(REQUIRED_HEADERS)
+        | set(OPTIONAL_SUBCATEGORY_HEADERS)
+        | set(OPTIONAL_PROGRAM_LINKS_HEADERS)
+    )
     extra = [h for h in effective_headers if h not in allowed]
     if extra:
         raise ValidationError(f"Unexpected extra headers: {extra}")
@@ -233,22 +293,6 @@ def build_subcategory_multiplier(
     default_key: str,
     sub_keys: List[str],
 ) -> MultiplierValue:
-    """
-    Builds grocery/travel multiplier structure.
-
-    Resolution rules:
-    1) If any sub_key is present (non-empty), emit an object:
-         {"default": <resolved_default>, "<sub>": <val>, ...}
-       where resolved_default uses:
-         - default_key if provided, else legacy_key.
-       If still missing, default falls back to legacy scalar value already validated elsewhere,
-       and if that is missing (shouldn't happen), fallback to 1.0 conservatively.
-
-    2) If no sub_key is present:
-       - If default_key is provided (non-empty), emit {"default": <default>}
-       - Else emit legacy scalar (float) from legacy_key
-    """
-    # Legacy scalar is always required by REQUIRED_HEADERS and validated elsewhere.
     legacy_scalar = parse_number(row.get(legacy_key) or "", legacy_key, row_id)
 
     default_val = parse_optional_number(row.get(default_key) or "")
@@ -259,12 +303,10 @@ def build_subcategory_multiplier(
         v = parse_optional_number(row.get(sk) or "")
         if v is not None:
             any_sub_present = True
-            # "grocery_online" -> "online", "travel_hotel" -> "hotel"
-            # sk like "grocery_in_store" or "travel_hotel"
             if sk.startswith("grocery_"):
-                sub_name = sk[len("grocery_"):]
+                sub_name = sk[len("grocery_") :]
             elif sk.startswith("travel_"):
-                sub_name = sk[len("travel_"):]
+                sub_name = sk[len("travel_") :]
             else:
                 sub_name = sk
 
@@ -281,13 +323,11 @@ def build_subcategory_multiplier(
             out[name] = float(sub_vals[name])
         return out
 
-    # No subcategory fields present; emit default object only if explicitly set.
     if default_val is not None:
         if default_val < 0 or default_val > 10:
             raise ValidationError(f"[{row_id}] {default_key}={default_val} out of allowed range 0..10.")
         return {"default": float(default_val)}
 
-    # Pure legacy fallback
     return float(legacy_scalar)
 
 
@@ -302,7 +342,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
     seen_keys: set[str] = set()
     cards: List[CardRow] = []
 
-    for idx, row in enumerate(reader, start=2):  # row 1 is header
+    for idx, row in enumerate(reader, start=2):
         card_key = (row.get("card_key") or "").strip()
         row_id = f"row{idx}:{card_key or '(missing card_key)'}"
 
@@ -315,7 +355,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
         card_name = (row.get("card_name") or "").strip()
         issuer = (row.get("issuer") or "").strip()
         issuer_url = validate_url_https(row.get("issuer_url") or "", "issuer_url", row_id)
-        verified_date = validate_date_yyyy_mm_dd(row.get("verified_date") or "", row_id)
+        verified_date = validate_date_yyyy_mm_dd(row.get("verified_date") or "", "verified_date", row_id)
         reward_currency = (row.get("reward_currency") or "").strip().lower()
 
         if card_name == "":
@@ -327,12 +367,10 @@ def parse_rows(csv_text: str) -> List[CardRow]:
                 f"[{row_id}] reward_currency='{reward_currency}' not in {sorted(ALLOWED_REWARD_CURRENCY)}."
             )
 
-        # Base categories remain scalar floats (legacy)
         dining = parse_number(row.get("dining_multiplier") or "", "dining_multiplier", row_id)
         gas = parse_number(row.get("gas_multiplier") or "", "gas_multiplier", row_id)
         other = parse_number(row.get("other_multiplier") or "", "other_multiplier", row_id)
 
-        # Grocery + Travel: subcategory-aware
         grocery = build_subcategory_multiplier(
             row,
             row_id=row_id,
@@ -357,10 +395,8 @@ def parse_rows(csv_text: str) -> List[CardRow]:
         }
 
         notes_list = parse_notes(row.get("notes") or "")
+        program_links = parse_program_links(row.get("program_links") or "")
 
-        # Additional safety rule: if all legacy scalar categories are zero,
-        # notes should clearly indicate no rewards.
-        # (For grocery/travel objects, treat "default" as the comparable scalar if present.)
         def _scalar_for_check(v: MultiplierValue) -> float:
             if isinstance(v, dict):
                 return float(v.get("default", 0.0))
@@ -391,6 +427,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
                 reward_currency=reward_currency,
                 multipliers=multipliers,
                 notes=notes_list,
+                program_links=program_links,
             )
         )
 
@@ -401,7 +438,6 @@ def parse_rows(csv_text: str) -> List[CardRow]:
 
 
 def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
-    # Ensure deterministic order: cards are already in CSV order.
     return {
         "schema_version": SCHEMA_VERSION,
         "category_mapping": CATEGORY_MAPPING,
@@ -415,58 +451,224 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
                 "reward_currency": c.reward_currency,
                 "multipliers": c.multipliers,
                 "notes": c.notes,
+                # only include when present to keep payload clean
+                **({"program_links": c.program_links} if c.program_links else {}),
             }
             for c in cards
         ],
     }
 
 
+# -------------------------
+# Programs parsing/building
+# -------------------------
+def _validate_required_headers(reader: csv.DictReader, required: List[str], label: str) -> List[str]:
+    if reader.fieldnames is None:
+        raise ValidationError(f"{label} CSV has no header row.")
+    headers = [h.strip() for h in reader.fieldnames]
+    missing = [h for h in required if h not in headers]
+    if missing:
+        raise ValidationError(f"{label} missing required headers: {missing}")
+    return headers
+
+
+def parse_programs(csv_text: str) -> List[Dict[str, Any]]:
+    reader = csv.DictReader(StringIO(csv_text))
+    _validate_required_headers(reader, PROGRAMS_REQUIRED_HEADERS, "programs")
+
+    out: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+
+    for idx, row in enumerate(reader, start=2):
+        key = (row.get("program_key") or "").strip()
+        row_id = f"programs_row{idx}:{key or '(missing program_key)'}"
+        if key == "":
+            raise ValidationError(f"[{row_id}] program_key is blank.")
+        if key in seen:
+            raise ValidationError(f"[{row_id}] duplicate program_key '{key}'.")
+        seen.add(key)
+
+        program = {
+            "program_key": key,
+            "program_name": (row.get("program_name") or "").strip(),
+            "issuer": (row.get("issuer") or "").strip(),
+            "source_url": validate_url_https(row.get("source_url") or "", "source_url", row_id),
+            "requires_activation": parse_bool_true_false(row.get("requires_activation") or "", "requires_activation", row_id),
+            "cap_amount": parse_optional_int(row.get("cap_amount") or ""),
+            "cap_period": (row.get("cap_period") or "").strip().lower() or None,
+            "base_rate": int(parse_number(row.get("base_rate") or "", "base_rate", row_id)),
+            "bonus_rate": int(parse_number(row.get("bonus_rate") or "", "bonus_rate", row_id)),
+            "notes": (row.get("notes") or "").strip(),
+            "status": (row.get("status") or "").strip().lower(),
+            "last_verified": (row.get("last_verified") or "").strip(),
+        }
+
+        if program["program_name"] == "":
+            raise ValidationError(f"[{row_id}] program_name is blank.")
+        if program["issuer"] == "":
+            raise ValidationError(f"[{row_id}] issuer is blank.")
+        if program["status"] not in {"verified", "draft", "deprecated", ""}:
+            raise ValidationError(f"[{row_id}] status='{program['status']}' invalid.")
+
+        # Normalize None fields out for stability
+        if program["cap_amount"] is None:
+            program.pop("cap_amount")
+        if program["cap_period"] is None:
+            program.pop("cap_period")
+        if program["last_verified"] == "":
+            program.pop("last_verified")
+        if program["notes"] == "":
+            program.pop("notes")
+
+        out.append(program)
+
+    # Deterministic order
+    out.sort(key=lambda x: x["program_key"])
+    return out
+
+
+def parse_program_quarters(csv_text: str) -> List[Dict[str, Any]]:
+    reader = csv.DictReader(StringIO(csv_text))
+    _validate_required_headers(reader, PROGRAM_QUARTERS_REQUIRED_HEADERS, "program_quarters")
+
+    out: List[Dict[str, Any]] = []
+
+    for idx, row in enumerate(reader, start=2):
+        key = (row.get("program_key") or "").strip()
+        row_id = f"program_quarters_row{idx}:{key or '(missing program_key)'}"
+        if key == "":
+            raise ValidationError(f"[{row_id}] program_key is blank.")
+
+        start_date = validate_date_yyyy_mm_dd(row.get("start_date") or "", "start_date", row_id)
+        end_date = validate_date_yyyy_mm_dd(row.get("end_date") or "", "end_date", row_id)
+        if end_date < start_date:
+            raise ValidationError(f"[{row_id}] end_date {end_date} is before start_date {start_date}.")
+
+        category = (row.get("category") or "").strip().lower()
+        if category == "":
+            raise ValidationError(f"[{row_id}] category is blank.")
+
+        status = (row.get("status") or "").strip().lower()
+        if status not in {"verified", "draft", "deprecated", ""}:
+            raise ValidationError(f"[{row_id}] status='{status}' invalid.")
+
+        entry: Dict[str, Any] = {
+            "program_key": key,
+            "start_date": start_date,
+            "end_date": end_date,
+            "category": category,
+            "status": status,
+        }
+
+        last_verified = (row.get("last_verified") or "").strip()
+        if last_verified:
+            entry["last_verified"] = last_verified
+
+        out.append(entry)
+
+    # Deterministic order
+    out.sort(key=lambda x: (x["program_key"], x["start_date"], x["category"]))
+    return out
+
+
+def build_programs_json(programs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "programs": programs,
+    }
+
+
+def build_program_quarters_json(entries: List[Dict[str, Any]]) -> Dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "program_quarters": entries,
+    }
+
+
 def write_json(path: str, data: Dict[str, Any]) -> None:
-    # Stable formatting + newline at end
     Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def compute_sha256_file(path: str) -> str:
+def compute_sha256_files(paths: List[str]) -> str:
     h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(8192), b""):
-            h.update(chunk)
+    for p in paths:
+        with open(p, "rb") as f:
+            for chunk in iter(lambda: f.read(8192), b""):
+                h.update(chunk)
+        # separator to avoid accidental boundary ambiguity (very low risk but free)
+        h.update(b"\n")
     return h.hexdigest()
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--csv-url", required=True, help="Published CSV URL for Canonical_Cards")
-    ap.add_argument("--out-dir", default=".", help="Output directory for cards.json and cards_version.json (default: .)")
+
+    # Back-compat alias
+    ap.add_argument("--csv-url", help="(Legacy) Published CSV URL for Canonical_Cards (alias for --cards-csv-url)")
+
+    ap.add_argument("--cards-csv-url", help="Published CSV URL for Canonical_Cards")
+    ap.add_argument("--programs-csv-url", help="Published CSV URL for programs tab")
+    ap.add_argument("--program-quarters-csv-url", help="Published CSV URL for program_quarters tab")
+    ap.add_argument("--out-dir", default=".", help="Output directory (default: .)")
     args = ap.parse_args()
 
-    csv_text = fetch_csv_text(args.csv_url)
-    cards = parse_rows(csv_text)
-
-    cards_json = build_cards_json(cards)
+    cards_csv_url = args.cards_csv_url or args.csv_url
+    if not cards_csv_url:
+        raise ValidationError("You must pass --cards-csv-url (or legacy --csv-url).")
 
     out_dir = args.out_dir.rstrip("/")
     Path(out_dir).mkdir(parents=True, exist_ok=True)
 
     cards_json_path = f"{out_dir}/cards.json"
+    programs_json_path = f"{out_dir}/programs.json"
+    program_quarters_json_path = f"{out_dir}/program_quarters.json"
     cards_version_path = f"{out_dir}/cards_version.json"
 
-
-    # 1) Write cards.json deterministically
+    # 1) Cards
+    cards_csv_text = fetch_csv_text(cards_csv_url)
+    cards = parse_rows(cards_csv_text)
+    cards_json = build_cards_json(cards)
     write_json(cards_json_path, cards_json)
 
-    # 2) Compute deterministic version from cards.json bytes
-    digest = compute_sha256_file(cards_json_path)
+    # 2) Programs (optional but recommended)
+    programs_count = 0
+    program_quarters_count = 0
+
+    bundle_paths = [cards_json_path]
+
+    if args.programs_csv_url:
+        programs_csv_text = fetch_csv_text(args.programs_csv_url)
+        programs = parse_programs(programs_csv_text)
+        programs_json = build_programs_json(programs)
+        write_json(programs_json_path, programs_json)
+        programs_count = len(programs)
+        bundle_paths.append(programs_json_path)
+
+    if args.program_quarters_csv_url:
+        pq_csv_text = fetch_csv_text(args.program_quarters_csv_url)
+        pq_entries = parse_program_quarters(pq_csv_text)
+        pq_json = build_program_quarters_json(pq_entries)
+        write_json(program_quarters_json_path, pq_json)
+        program_quarters_count = len(pq_entries)
+        bundle_paths.append(program_quarters_json_path)
+
+    # 3) Bundle version (cards + optional programs + optional program_quarters)
+    digest = compute_sha256_files(bundle_paths)
     version = f"sha256:{digest[:12]}"
 
-    # 3) Only rewrite cards_version.json when version changes
     existing = _read_json_if_exists(cards_version_path)
     existing_version = existing.get("version") if isinstance(existing, dict) else None
 
     if existing_version == version:
         print(f"OK: wrote {cards_json_path}")
+        if args.programs_csv_url:
+            print(f"OK: wrote {programs_json_path}")
+        if args.program_quarters_csv_url:
+            print(f"OK: wrote {program_quarters_json_path}")
         print(f"OK: cards_version.json unchanged (version={version})")
-        print(f"version={version} cards_count={len(cards)}")
+        print(
+            f"version={version} cards_count={len(cards)} programs_count={programs_count} program_quarters_count={program_quarters_count}"
+        )
         return 0
 
     cards_version = {
@@ -474,12 +676,21 @@ def main() -> int:
         "version": version,
         "generated_at": _utc_now_z(),
         "cards_count": len(cards),
+        "programs_count": programs_count,
+        "program_quarters_count": program_quarters_count,
+        "bundle_files": [Path(p).name for p in bundle_paths],
     }
     write_json(cards_version_path, cards_version)
 
     print(f"OK: wrote {cards_json_path}")
+    if args.programs_csv_url:
+        print(f"OK: wrote {programs_json_path}")
+    if args.program_quarters_csv_url:
+        print(f"OK: wrote {program_quarters_json_path}")
     print(f"OK: wrote {cards_version_path}")
-    print(f"version={version} cards_count={len(cards)}")
+    print(
+        f"version={version} cards_count={len(cards)} programs_count={programs_count} program_quarters_count={program_quarters_count}"
+    )
     return 0
 
 
