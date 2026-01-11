@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "program_quarters": [
+    {
+      "program_key": "chase_5pct_rotating",
+      "start_date": "2026-01-01",
+      "end_date": "2026-03-31",
+      "category": "grocery",
+      "status": "verified"
+    },
+    {
+      "program_key": "discover_5pct_rotating",
+      "start_date": "2026-01-01",
+      "end_date": "2026-03-31",
+      "category": "grocery",
+      "status": "verified"
+    }
+  ]
+}

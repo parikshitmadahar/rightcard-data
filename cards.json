@@ -323,6 +323,9 @@
           "type": "conditional_note",
           "text": "5% rotating quarterly categories (activation required; not modeled)"
         }
+      ],
+      "program_links": [
+        "discover_5pct_rotating"
       ]
     },
     {
@@ -486,6 +489,9 @@
           "type": "portal_note",
           "text": "Up to 5x travel when booked via Chase Travel portal"
         }
+      ],
+      "program_links": [
+        "chase_5pct_rotating"
       ]
     },
     {

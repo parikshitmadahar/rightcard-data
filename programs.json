@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "programs": [
+    {
+      "program_key": "chase_5pct_rotating",
+      "program_name": "Chase Freedom/Flex 5% Rotating Categories",
+      "issuer": "Chase",
+      "source_url": "https://www.chase.com/personal/credit-cards/freedom/flex",
+      "requires_activation": true,
+      "cap_amount": 1500,
+      "cap_period": "quarter",
+      "base_rate": 1,
+      "bonus_rate": 5,
+      "notes": "5% categories change quarterly; activation required.",
+      "status": "verified"
+    },
+    {
+      "program_key": "discover_5pct_rotating",
+      "program_name": "Discover 5% Rotating Categories",
+      "issuer": "Discover",
+      "source_url": "https://www.discover.com/credit-cards/cash-back/cashback-calendar.html",
+      "requires_activation": true,
+      "cap_amount": 1500,
+      "cap_period": "quarter",
+      "base_rate": 1,
+      "bonus_rate": 5,
+      "notes": "5% categories change quarterly; activation required.",
+      "status": "verified"
+    }
+  ]
+}
