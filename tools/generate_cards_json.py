@@ -58,17 +58,15 @@ REQUIRED_HEADERS = [
     "notes",
 ]
 
-OPTIONAL_SUBCATEGORY_HEADERS = [
+OPTIONAL_HEADERS = [
+    # subcategory columns (v1 taxonomy)
     "grocery_default",
     "grocery_online",
     "grocery_in_store",
     "travel_default",
     "travel_flight",
     "travel_hotel",
-]
-
-# NEW: Optional column in Canonical_Cards to link rotating programs
-OPTIONAL_PROGRAM_LINKS_HEADERS = [
+    # NEW: Optional column in Canonical_Cards to link rotating programs
     "program_links",
 ]
 
@@ -218,18 +216,20 @@ def parse_bool_true_false(value: str, field_name: str, row_id: str) -> bool:
 
 def parse_program_links(cell: str) -> List[str]:
     """
-    Comma-separated list of program_keys.
+    Accepts comma or pipe separated program_keys.
     Examples:
       "" -> []
       "discover_5pct_rotating" -> ["discover_5pct_rotating"]
       "discover_5pct_rotating, chase_5pct_rotating" -> [...]
+      "discover_5pct_rotating|chase_5pct_rotating" -> [...]
     """
     raw = (cell or "").strip()
     if raw == "":
         return []
-    parts = [p.strip() for p in raw.split(",")]
+    normalized = raw.replace("|", ",")
+    parts = [p.strip() for p in normalized.split(",")]
     out = [p for p in parts if p]
-    # deterministic order
+    # deterministic order + de-dup
     return sorted(set(out))
 
 
@@ -275,11 +275,7 @@ def validate_headers(headers: List[str]) -> None:
     if missing:
         raise ValidationError(f"Missing required headers: {missing}")
 
-    allowed = (
-        set(REQUIRED_HEADERS)
-        | set(OPTIONAL_SUBCATEGORY_HEADERS)
-        | set(OPTIONAL_PROGRAM_LINKS_HEADERS)
-    )
+    allowed = set(REQUIRED_HEADERS) | set(OPTIONAL_HEADERS)
     extra = [h for h in effective_headers if h not in allowed]
     if extra:
         raise ValidationError(f"Unexpected extra headers: {extra}")
@@ -331,10 +327,10 @@ def build_subcategory_multiplier(
     return float(legacy_scalar)
 
 
-def parse_rows(csv_text: str) -> List[CardRow]:
+def parse_cards(csv_text: str) -> List[CardRow]:
     reader = csv.DictReader(StringIO(csv_text))
     if reader.fieldnames is None:
-        raise ValidationError("CSV has no header row.")
+        raise ValidationError("cards CSV has no header row.")
 
     headers = [h.strip() for h in reader.fieldnames]
     validate_headers(headers)
@@ -344,7 +340,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
 
     for idx, row in enumerate(reader, start=2):
         card_key = (row.get("card_key") or "").strip()
-        row_id = f"row{idx}:{card_key or '(missing card_key)'}"
+        row_id = f"cards_row{idx}:{card_key or '(missing card_key)'}"
 
         if card_key == "":
             raise ValidationError(f"[{row_id}] card_key is blank.")
@@ -432,7 +428,7 @@ def parse_rows(csv_text: str) -> List[CardRow]:
         )
 
     if not cards:
-        raise ValidationError("CSV contains zero card rows.")
+        raise ValidationError("cards CSV contains zero card rows.")
 
     return cards
 
@@ -451,7 +447,6 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
                 "reward_currency": c.reward_currency,
                 "multipliers": c.multipliers,
                 "notes": c.notes,
-                # only include when present to keep payload clean
                 **({"program_links": c.program_links} if c.program_links else {}),
             }
             for c in cards
@@ -488,12 +483,14 @@ def parse_programs(csv_text: str) -> List[Dict[str, Any]]:
             raise ValidationError(f"[{row_id}] duplicate program_key '{key}'.")
         seen.add(key)
 
-        program = {
+        program: Dict[str, Any] = {
             "program_key": key,
             "program_name": (row.get("program_name") or "").strip(),
             "issuer": (row.get("issuer") or "").strip(),
             "source_url": validate_url_https(row.get("source_url") or "", "source_url", row_id),
-            "requires_activation": parse_bool_true_false(row.get("requires_activation") or "", "requires_activation", row_id),
+            "requires_activation": parse_bool_true_false(
+                row.get("requires_activation") or "", "requires_activation", row_id
+            ),
             "cap_amount": parse_optional_int(row.get("cap_amount") or ""),
             "cap_period": (row.get("cap_period") or "").strip().lower() or None,
             "base_rate": int(parse_number(row.get("base_rate") or "", "base_rate", row_id)),
@@ -510,19 +507,18 @@ def parse_programs(csv_text: str) -> List[Dict[str, Any]]:
         if program["status"] not in {"verified", "draft", "deprecated", ""}:
             raise ValidationError(f"[{row_id}] status='{program['status']}' invalid.")
 
-        # Normalize None fields out for stability
-        if program["cap_amount"] is None:
-            program.pop("cap_amount")
-        if program["cap_period"] is None:
-            program.pop("cap_period")
-        if program["last_verified"] == "":
-            program.pop("last_verified")
-        if program["notes"] == "":
-            program.pop("notes")
+        # Normalize empties out for stability
+        if program.get("cap_amount") is None:
+            program.pop("cap_amount", None)
+        if program.get("cap_period") is None:
+            program.pop("cap_period", None)
+        if program.get("last_verified") == "":
+            program.pop("last_verified", None)
+        if program.get("notes") == "":
+            program.pop("notes", None)
 
         out.append(program)
 
-    # Deterministic order
     out.sort(key=lambda x: x["program_key"])
     return out
 
@@ -566,23 +562,16 @@ def parse_program_quarters(csv_text: str) -> List[Dict[str, Any]]:
 
         out.append(entry)
 
-    # Deterministic order
     out.sort(key=lambda x: (x["program_key"], x["start_date"], x["category"]))
     return out
 
 
 def build_programs_json(programs: List[Dict[str, Any]]) -> Dict[str, Any]:
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "programs": programs,
-    }
+    return {"schema_version": SCHEMA_VERSION, "programs": programs}
 
 
 def build_program_quarters_json(entries: List[Dict[str, Any]]) -> Dict[str, Any]:
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "program_quarters": entries,
-    }
+    return {"schema_version": SCHEMA_VERSION, "program_quarters": entries}
 
 
 def write_json(path: str, data: Dict[str, Any]) -> None:
@@ -595,8 +584,7 @@ def compute_sha256_files(paths: List[str]) -> str:
         with open(p, "rb") as f:
             for chunk in iter(lambda: f.read(8192), b""):
                 h.update(chunk)
-        # separator to avoid accidental boundary ambiguity (very low risk but free)
-        h.update(b"\n")
+        h.update(b"\n")  # separator
     return h.hexdigest()
 
 
@@ -626,16 +614,16 @@ def main() -> int:
 
     # 1) Cards
     cards_csv_text = fetch_csv_text(cards_csv_url)
-    cards = parse_rows(cards_csv_text)
+    cards = parse_cards(cards_csv_text)
     cards_json = build_cards_json(cards)
     write_json(cards_json_path, cards_json)
 
-    # 2) Programs (optional but recommended)
     programs_count = 0
     program_quarters_count = 0
 
     bundle_paths = [cards_json_path]
 
+    # 2) Programs (optional but recommended)
     if args.programs_csv_url:
         programs_csv_text = fetch_csv_text(args.programs_csv_url)
         programs = parse_programs(programs_csv_text)
@@ -644,6 +632,7 @@ def main() -> int:
         programs_count = len(programs)
         bundle_paths.append(programs_json_path)
 
+    # 3) Program quarters (optional but recommended)
     if args.program_quarters_csv_url:
         pq_csv_text = fetch_csv_text(args.program_quarters_csv_url)
         pq_entries = parse_program_quarters(pq_csv_text)
@@ -652,7 +641,7 @@ def main() -> int:
         program_quarters_count = len(pq_entries)
         bundle_paths.append(program_quarters_json_path)
 
-    # 3) Bundle version (cards + optional programs + optional program_quarters)
+    # 4) Bundle version (cards + optional programs + optional program_quarters)
     digest = compute_sha256_files(bundle_paths)
     version = f"sha256:{digest[:12]}"
 
