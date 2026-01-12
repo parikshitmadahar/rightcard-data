@@ -5,15 +5,25 @@
       "program_key": "chase_5pct_rotating",
       "start_date": "2026-01-01",
       "end_date": "2026-03-31",
-      "category": "grocery",
-      "status": "verified"
+      "category": "dining",
+      "status": "verified",
+      "last_verified": "2026-01-11"
     },
     {
       "program_key": "discover_5pct_rotating",
       "start_date": "2026-01-01",
       "end_date": "2026-03-31",
       "category": "grocery",
-      "status": "verified"
+      "status": "verified",
+      "last_verified": "2026-01-11"
+    },
+    {
+      "program_key": "usbank_cashplus_5pct_rotating",
+      "start_date": "2026-01-01",
+      "end_date": "2026-03-31",
+      "category": "gas",
+      "status": "verified",
+      "last_verified": "2026-01-11"
     }
   ]
 }

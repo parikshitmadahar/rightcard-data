@@ -12,7 +12,8 @@
       "base_rate": 1,
       "bonus_rate": 5,
       "notes": "5% categories change quarterly; activation required.",
-      "status": "verified"
+      "status": "verified",
+      "last_verified": "2026-01-11"
     },
     {
       "program_key": "discover_5pct_rotating",
@@ -25,7 +26,22 @@
       "base_rate": 1,
       "bonus_rate": 5,
       "notes": "5% categories change quarterly; activation required.",
-      "status": "verified"
+      "status": "verified",
+      "last_verified": "2026-01-11"
+    },
+    {
+      "program_key": "usbank_cashplus_5pct_rotating",
+      "program_name": "U.S. Bank Cash+ 5% Categories",
+      "issuer": "U.S. Bank",
+      "source_url": "https://www.usbank.com/credit-cards/cash-plus-visa-signature-credit-card.html",
+      "requires_activation": true,
+      "cap_amount": 2000,
+      "cap_period": "quarter",
+      "base_rate": 1,
+      "bonus_rate": 5,
+      "notes": "5% categories require user selection and activation; categories vary quarterly.",
+      "status": "verified",
+      "last_verified": "2026-01-11"
     }
   ]
 }

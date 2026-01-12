@@ -1,10 +1,10 @@
 {
   "schema_version": 2,
-  "version": "sha256:861a0eb224bc",
-  "generated_at": "2026-01-11T06:48:42Z",
+  "version": "sha256:46a1a334a03a",
+  "generated_at": "2026-01-12T04:09:30Z",
   "cards_count": 48,
-  "programs_count": 2,
-  "program_quarters_count": 2,
+  "programs_count": 3,
+  "program_quarters_count": 3,
   "bundle_files": [
     "cards.json",
     "programs.json",

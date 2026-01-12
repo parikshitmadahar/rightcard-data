@@ -705,6 +705,9 @@
           "type": "conditional_note",
           "text": "5% categories require user selection and activation (not modeled)"
         }
+      ],
+      "program_links": [
+        "usbank_cashplus_5pct_rotating"
       ]
     },
     {
