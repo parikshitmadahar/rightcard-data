@@ -5,6 +5,7 @@ RightCard - Canonical CSVs -> validated cards.json + programs.json + program_qua
 Usage (new, recommended):
   python3 tools/generate_cards_json.py \
     --cards-csv-url "https://docs.google.com/...Canonical_Cards...output=csv" \
+    --card-conditions-csv-url "https://docs.google.com/...card_conditions...output=csv" \
     --programs-csv-url "https://docs.google.com/...programs...output=csv" \
     --program-quarters-csv-url "https://docs.google.com/...program_quarters...output=csv" \
     --out-dir "."
@@ -21,6 +22,7 @@ Outputs:
 Key behavior:
 - JSON outputs are deterministic for identical CSV inputs.
 - cards_version.json is ONLY rewritten when the combined data bundle content changes.
+- card_conditions are exported into cards.json as `conditions` (verified-only).
 """
 
 from __future__ import annotations
@@ -66,7 +68,7 @@ OPTIONAL_HEADERS = [
     "travel_default",
     "travel_flight",
     "travel_hotel",
-    # NEW: Optional column in Canonical_Cards to link rotating programs
+    # Optional column in Canonical_Cards to link rotating programs
     "program_links",
 ]
 
@@ -96,6 +98,38 @@ class CardRow:
     multipliers: Dict[str, MultiplierValue]
     notes: List[Dict[str, str]]
     program_links: List[str]
+
+
+# -------------------------
+# Card Conditions schema
+# -------------------------
+CARD_CONDITIONS_REQUIRED_HEADERS = [
+    "card_key",
+    "condition_key",
+    "condition_type",
+    "applies_to_category",
+    "applies_to_subcategory",
+    "message",
+    "source_url",
+    "cap_amount",
+    "cap_period",
+    "status",
+    "last_verified",
+]
+
+ALLOWED_CONDITION_STATUS = {"verified", "draft", "deprecated", ""}
+ALLOWED_CONDITION_TYPES = {
+    "portal_requirement",
+    "cap",
+    "exclusion",
+    "membership_required",
+    "merchant_only",
+    "issuer_definition",
+    "not_modeled",
+    "no_rewards",
+}
+ALLOWED_APPLIES_TO_CATEGORY = {"dining", "grocery", "gas", "travel", "other", ""}
+ALLOWED_CAP_PERIOD = {"year", "quarter", "month", "billing_cycle", "week", ""}
 
 
 # -------------------------
@@ -433,7 +467,109 @@ def parse_cards(csv_text: str) -> List[CardRow]:
     return cards
 
 
-def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
+def _validate_required_headers(reader: csv.DictReader, required: List[str], label: str) -> List[str]:
+    if reader.fieldnames is None:
+        raise ValidationError(f"{label} CSV has no header row.")
+    headers = [h.strip() for h in reader.fieldnames]
+    missing = [h for h in required if h not in headers]
+    if missing:
+        raise ValidationError(f"{label} missing required headers: {missing}")
+    return headers
+
+
+def parse_card_conditions(csv_text: str, *, valid_card_keys: set[str]) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Returns mapping: card_key -> list of condition dicts (verified-only).
+    """
+    reader = csv.DictReader(StringIO(csv_text))
+    _validate_required_headers(reader, CARD_CONDITIONS_REQUIRED_HEADERS, "card_conditions")
+
+    # track duplicates by (card_key, condition_key)
+    seen_pairs: set[tuple[str, str]] = set()
+    out: Dict[str, List[Dict[str, Any]]] = {}
+
+    for idx, row in enumerate(reader, start=2):
+        card_key = (row.get("card_key") or "").strip()
+        cond_key = (row.get("condition_key") or "").strip()
+        row_id = f"card_conditions_row{idx}:{card_key or '(missing card_key)'}:{cond_key or '(missing condition_key)'}"
+
+        if card_key == "":
+            raise ValidationError(f"[{row_id}] card_key is blank.")
+        if cond_key == "":
+            raise ValidationError(f"[{row_id}] condition_key is blank.")
+        if card_key not in valid_card_keys:
+            raise ValidationError(f"[{row_id}] card_key '{card_key}' not found in canonical_cards.")
+
+        pair = (card_key, cond_key)
+        if pair in seen_pairs:
+            raise ValidationError(f"[{row_id}] duplicate condition_key '{cond_key}' for card_key '{card_key}'.")
+        seen_pairs.add(pair)
+
+        status = (row.get("status") or "").strip().lower()
+        if status not in ALLOWED_CONDITION_STATUS:
+            raise ValidationError(f"[{row_id}] status='{status}' invalid (allowed: {sorted(ALLOWED_CONDITION_STATUS)}).")
+
+        # VERIFIED-ONLY export
+        if status != "verified":
+            continue
+
+        ctype = (row.get("condition_type") or "").strip().lower()
+        if ctype not in ALLOWED_CONDITION_TYPES:
+            raise ValidationError(f"[{row_id}] condition_type='{ctype}' invalid (allowed: {sorted(ALLOWED_CONDITION_TYPES)}).")
+
+        applies_to = (row.get("applies_to_category") or "").strip().lower()
+        if applies_to not in ALLOWED_APPLIES_TO_CATEGORY:
+            raise ValidationError(
+                f"[{row_id}] applies_to_category='{applies_to}' invalid (allowed: {sorted(ALLOWED_APPLIES_TO_CATEGORY)})."
+            )
+
+        subscope = (row.get("applies_to_subcategory") or "").strip()
+        message = (row.get("message") or "").strip()
+        if message == "":
+            raise ValidationError(f"[{row_id}] message is blank.")
+
+        source_url = validate_url_https(row.get("source_url") or "", "source_url", row_id)
+
+        cap_amount = parse_optional_int(row.get("cap_amount") or "")
+        cap_period = (row.get("cap_period") or "").strip().lower()
+        if cap_period not in ALLOWED_CAP_PERIOD:
+            raise ValidationError(f"[{row_id}] cap_period='{cap_period}' invalid (allowed: {sorted(ALLOWED_CAP_PERIOD)}).")
+
+        if cap_amount is not None and cap_period == "":
+            raise ValidationError(f"[{row_id}] cap_amount is set but cap_period is blank.")
+        if cap_amount is None and cap_period != "":
+            # allow cap_period without amount? better to be strict for consistency
+            raise ValidationError(f"[{row_id}] cap_period is set but cap_amount is blank.")
+
+        condition: Dict[str, Any] = {
+            "condition_key": cond_key,
+            "type": ctype,
+            "applies_to": applies_to or "other",
+            "subscope": subscope or None,
+            "message": message,
+            "source_url": source_url,
+            "cap_amount": cap_amount,
+            "cap_period": cap_period or None,
+        }
+
+        # prune nulls for stability/cleanliness
+        if condition["subscope"] is None:
+            condition.pop("subscope", None)
+        if condition["cap_amount"] is None:
+            condition.pop("cap_amount", None)
+        if condition["cap_period"] is None:
+            condition.pop("cap_period", None)
+
+        out.setdefault(card_key, []).append(condition)
+
+    # deterministic ordering within each card
+    for ck in list(out.keys()):
+        out[ck].sort(key=lambda d: d["condition_key"])
+
+    return out
+
+
+def build_cards_json(cards: List[CardRow], conditions_by_card_key: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     return {
         "schema_version": SCHEMA_VERSION,
         "category_mapping": CATEGORY_MAPPING,
@@ -448,6 +584,11 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
                 "multipliers": c.multipliers,
                 "notes": c.notes,
                 **({"program_links": c.program_links} if c.program_links else {}),
+                **(
+                    {"conditions": conditions_by_card_key.get(c.card_key, [])}
+                    if conditions_by_card_key.get(c.card_key)
+                    else {}
+                ),
             }
             for c in cards
         ],
@@ -457,16 +598,6 @@ def build_cards_json(cards: List[CardRow]) -> Dict[str, Any]:
 # -------------------------
 # Programs parsing/building
 # -------------------------
-def _validate_required_headers(reader: csv.DictReader, required: List[str], label: str) -> List[str]:
-    if reader.fieldnames is None:
-        raise ValidationError(f"{label} CSV has no header row.")
-    headers = [h.strip() for h in reader.fieldnames]
-    missing = [h for h in required if h not in headers]
-    if missing:
-        raise ValidationError(f"{label} missing required headers: {missing}")
-    return headers
-
-
 def parse_programs(csv_text: str) -> List[Dict[str, Any]]:
     reader = csv.DictReader(StringIO(csv_text))
     _validate_required_headers(reader, PROGRAMS_REQUIRED_HEADERS, "programs")
@@ -595,6 +726,7 @@ def main() -> int:
     ap.add_argument("--csv-url", help="(Legacy) Published CSV URL for Canonical_Cards (alias for --cards-csv-url)")
 
     ap.add_argument("--cards-csv-url", help="Published CSV URL for Canonical_Cards")
+    ap.add_argument("--card-conditions-csv-url", help="Published CSV URL for card_conditions tab (optional)")
     ap.add_argument("--programs-csv-url", help="Published CSV URL for programs tab")
     ap.add_argument("--program-quarters-csv-url", help="Published CSV URL for program_quarters tab")
     ap.add_argument("--out-dir", default=".", help="Output directory (default: .)")
@@ -615,7 +747,17 @@ def main() -> int:
     # 1) Cards
     cards_csv_text = fetch_csv_text(cards_csv_url)
     cards = parse_cards(cards_csv_text)
-    cards_json = build_cards_json(cards)
+    card_keys = {c.card_key for c in cards}
+
+    # 1b) Card conditions (optional)
+    conditions_by_card_key: Dict[str, List[Dict[str, Any]]] = {}
+    conditions_count = 0
+    if args.card_conditions_csv_url:
+        cc_csv_text = fetch_csv_text(args.card_conditions_csv_url)
+        conditions_by_card_key = parse_card_conditions(cc_csv_text, valid_card_keys=card_keys)
+        conditions_count = sum(len(v) for v in conditions_by_card_key.values())
+
+    cards_json = build_cards_json(cards, conditions_by_card_key)
     write_json(cards_json_path, cards_json)
 
     programs_count = 0
@@ -656,7 +798,7 @@ def main() -> int:
             print(f"OK: wrote {program_quarters_json_path}")
         print(f"OK: cards_version.json unchanged (version={version})")
         print(
-            f"version={version} cards_count={len(cards)} programs_count={programs_count} program_quarters_count={program_quarters_count}"
+            f"version={version} cards_count={len(cards)} conditions_count={conditions_count} programs_count={programs_count} program_quarters_count={program_quarters_count}"
         )
         return 0
 
@@ -665,6 +807,7 @@ def main() -> int:
         "version": version,
         "generated_at": _utc_now_z(),
         "cards_count": len(cards),
+        "conditions_count": conditions_count,
         "programs_count": programs_count,
         "program_quarters_count": program_quarters_count,
         "bundle_files": [Path(p).name for p in bundle_paths],
@@ -678,7 +821,7 @@ def main() -> int:
         print(f"OK: wrote {program_quarters_json_path}")
     print(f"OK: wrote {cards_version_path}")
     print(
-        f"version={version} cards_count={len(cards)} programs_count={programs_count} program_quarters_count={program_quarters_count}"
+        f"version={version} cards_count={len(cards)} conditions_count={conditions_count} programs_count={programs_count} program_quarters_count={program_quarters_count}"
     )
     return 0
 

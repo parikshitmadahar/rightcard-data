@@ -51,16 +51,71 @@ python3 tools/generate_cards_json.py \
   --program-quarters-csv-url "$RIGHTCARD_PROGRAM_QUARTERS_CSV_URL" \
   --out-dir "."
 
+# Required outputs (bundle must be complete)
+required_files=(
+  "cards.json"
+  "programs.json"
+  "program_quarters.json"
+  "cards_version.json"
+)
+
+echo "Validating generator outputs..."
+for f in "${required_files[@]}"; do
+  if [[ ! -f "$REPO_ROOT/$f" ]]; then
+    echo "ERROR: missing output file: $f"
+    echo "Generation did not produce the full bundle. Aborting publish."
+    exit 1
+  fi
+done
+
+# Optional sanity check: conditions should exist at least once (warn-only)
+# This prevents the common failure mode where generator stops emitting conditions.
+if ! grep -q '"conditions"' "$REPO_ROOT/cards.json"; then
+  echo "WARN: cards.json contains no \"conditions\" field anywhere."
+  echo "      If you expected condition data, verify generator export before releasing."
+fi
+
 echo "Staging outputs..."
-git add cards.json programs.json program_quarters.json cards_version.json
+git add "${required_files[@]}"
 
 if git diff --cached --quiet; then
   echo "No data changes detected. Nothing to commit."
   exit 0
 fi
 
+# Build a more informative commit message from cards_version.json (best-effort).
+# Example fields your generator prints: version, cards_count, conditions_count, programs_count, program_quarters_count
+commit_msg="Update card data"
+if command -v python3 >/dev/null 2>&1; then
+  version_line="$(python3 - <<'PY'
+import json
+try:
+    with open("cards_version.json","r",encoding="utf-8") as f:
+        p=json.load(f)
+    v=p.get("version","")
+    cc=p.get("cards_count","")
+    pc=p.get("programs_count","")
+    pq=p.get("program_quarters_count","")
+    # conditions_count may or may not be present; handle both
+    cond=p.get("conditions_count","")
+    parts=[]
+    if v: parts.append(f"v={v}")
+    if cc != "": parts.append(f"cards={cc}")
+    if cond != "": parts.append(f"conditions={cond}")
+    if pc != "": parts.append(f"programs={pc}")
+    if pq != "": parts.append(f"quarters={pq}")
+    print(" ".join(parts))
+except Exception:
+    print("")
+PY
+)"
+  if [[ -n "${version_line:-}" ]]; then
+    commit_msg="Update card data (${version_line})"
+  fi
+fi
+
 echo "Committing and pushing..."
-git commit -m "Update card data"
+git commit -m "$commit_msg"
 git push
 
 echo "Done."

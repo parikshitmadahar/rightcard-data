@@ -1,8 +1,9 @@
 {
   "schema_version": 2,
-  "version": "sha256:46a1a334a03a",
-  "generated_at": "2026-01-12T04:09:30Z",
+  "version": "sha256:47e0085187e1",
+  "generated_at": "2026-01-17T22:22:14Z",
   "cards_count": 48,
+  "conditions_count": 61,
   "programs_count": 3,
   "program_quarters_count": 3,
   "bundle_files": [

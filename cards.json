@@ -35,6 +35,39 @@
           "type": "conditional_note",
           "text": "3x grocery points exclude Target, Walmart, and wholesale clubs and apply to online grocery only. | 5x travel points only for travel booked through Chase Travel portal; other travel earns 2x"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "grocery_excludes_bigbox",
+          "type": "exclusion",
+          "applies_to": "grocery",
+          "message": "Grocery bonus excludes Target, Walmart, and wholesale clubs",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred"
+        },
+        {
+          "condition_key": "grocery_online_only",
+          "type": "issuer_definition",
+          "applies_to": "grocery",
+          "subscope": "grocery_online",
+          "message": "Grocery bonus applies to online grocery (issuer definition)",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred"
+        },
+        {
+          "condition_key": "portal_chase_travel",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn when booked via Chase Travel",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred"
+        },
+        {
+          "condition_key": "travel_portal_only_note",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn applies only to travel booked via Chase Travel (issuer definition)",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred"
+        }
       ]
     },
     {
@@ -72,6 +105,32 @@
           "type": "conditional_note",
           "text": "4x points on U.S. supermarkets"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "flights_booking_rule",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "subscope": "travel_flight",
+          "message": "Flight bonus applies when booked directly with airlines or via Amex Travel (issuer definition)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/"
+        },
+        {
+          "condition_key": "restaurants_cap_50k_year",
+          "type": "cap",
+          "applies_to": "dining",
+          "message": "Restaurant bonus applies up to $50,000 per year",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
+          "cap_amount": 50000,
+          "cap_period": "year"
+        },
+        {
+          "condition_key": "us_supermarkets_definition",
+          "type": "issuer_definition",
+          "applies_to": "grocery",
+          "message": "Grocery bonus applies to U.S. supermarkets (issuer definition)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/"
+        }
       ]
     },
     {
@@ -93,6 +152,24 @@
           "type": "conditional_note",
           "text": "5% cash back applied only up to $500 spent per billing cycle per top eligible spend category | 5% category is dynamically the top eligible category each billing cycle"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "top_category_cap_500_cycle",
+          "type": "cap",
+          "applies_to": "other",
+          "message": "Top-category bonus applies up to $500 per billing cycle",
+          "source_url": "https://www.citi.com/credit-cards/citi-custom-cash-credit-card",
+          "cap_amount": 500,
+          "cap_period": "billing_cycle"
+        },
+        {
+          "condition_key": "top_category_dynamic_rule",
+          "type": "issuer_definition",
+          "applies_to": "other",
+          "message": "Bonus category is your top eligible spend category each billing cycle (issuer definition)",
+          "source_url": "https://www.citi.com/credit-cards/citi-custom-cash-credit-card"
+        }
       ]
     },
     {
@@ -113,6 +190,16 @@
         {
           "type": "portal_note",
           "text": "Up to 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "c1_travel_portal_bonus",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn on hotels and rentals when booked via Capital One Travel",
+          "source_url": "https://www.capitalone.com/credit-cards/savor/"
         }
       ]
     },
@@ -139,6 +226,22 @@
           "type": "conditional_note",
           "text": "2% cash back applies at grocery stores and wholesale clubs"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "grocery_includes_wholesale_definition",
+          "type": "issuer_definition",
+          "applies_to": "grocery",
+          "message": "Grocery/2% category includes wholesale clubs (issuer definition)",
+          "source_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/"
+        },
+        {
+          "condition_key": "user_selects_3pct_category",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "3% category is user-selected (selection/caps not modeled)",
+          "source_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/"
+        }
       ]
     },
     {
@@ -159,6 +262,16 @@
         {
           "type": "portal_note",
           "text": "Up to 5x travel when booked via Chase Travel portal"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "portal_chase_travel",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn when booked via Chase Travel",
+          "source_url": "https://www.chase.com/personal/credit-cards/freedom/unlimited"
         }
       ]
     },
@@ -188,6 +301,24 @@
         {
           "type": "conditional_note",
           "text": "6% cash back at U.S. Supermarkets applies on up to $6K per year in purchases"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "supermarkets_cap_6k_year",
+          "type": "cap",
+          "applies_to": "grocery",
+          "message": "Higher earn at U.S. supermarkets applies up to $6,000 per year",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/",
+          "cap_amount": 6000,
+          "cap_period": "year"
+        },
+        {
+          "condition_key": "transit_mapped_to_travel",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Transit purchases may be treated as Travel (issuer definition)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/"
         }
       ]
     },
@@ -235,6 +366,23 @@
           "type": "conditional_note",
           "text": "5% back rates require an eligible Prime membership"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "chase_travel_portal_bonus",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn on travel when booked via Chase Travel",
+          "source_url": "https://www.amazon.com/Prime-Visa/dp/BT00LN946S"
+        },
+        {
+          "condition_key": "prime_membership_required",
+          "type": "membership_required",
+          "applies_to": "other",
+          "message": "Higher earn rates require an eligible Prime membership",
+          "source_url": "https://www.amazon.com/Prime-Visa/dp/BT00LN946S"
+        }
       ]
     },
     {
@@ -260,6 +408,24 @@
           "type": "conditional_note",
           "text": "3% cash back at U.S. Supermarkets, U.S. Gas Stations, and on U.S. Online Retail purchases, on up to $6K in purchases in each category per year"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "category_bonuses_cap_6k_year",
+          "type": "cap",
+          "applies_to": "other",
+          "message": "Category bonuses apply up to $6,000 per year (issuer definition)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/",
+          "cap_amount": 6000,
+          "cap_period": "year"
+        },
+        {
+          "condition_key": "us_online_retail_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Online retail bonus category is not modeled in RightCard",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/"
+        }
       ]
     },
     {
@@ -281,6 +447,15 @@
           "type": "portal_note",
           "text": "3% cash back on Apple purchases & 2% cash back on all other purchases when you use the Apple Card with Apple Pay"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "apple_pay_requirement",
+          "type": "issuer_definition",
+          "applies_to": "other",
+          "message": "Higher earn applies when using Apple Pay (issuer definition)",
+          "source_url": "https://www.apple.com/apple-card/"
+        }
       ]
     },
     {
@@ -301,6 +476,16 @@
         {
           "type": "portal_note",
           "text": "earn 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "c1_travel_portal_bonus",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn on hotels and rentals when booked via Capital One Travel",
+          "source_url": "https://www.capitalone.com/credit-cards/quicksilver/"
         }
       ]
     },
@@ -347,6 +532,15 @@
           "type": "conditional_note",
           "text": "No rewards (APR/BT card)"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "no_rewards",
+          "type": "no_rewards",
+          "applies_to": "other",
+          "message": "This card does not earn rewards",
+          "source_url": "https://www.citi.com/credit-cards/citi-simplicity-credit-card"
+        }
       ]
     },
     {
@@ -368,6 +562,16 @@
           "type": "portal_note",
           "text": "Earn 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "c1_travel_portal_bonus",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn on hotels and rentals when booked via Capital One Travel",
+          "source_url": "https://www.capitalone.com/credit-cards/venture/"
+        }
       ]
     },
     {
@@ -388,6 +592,16 @@
         {
           "type": "portal_note",
           "text": "5x points on flights booked directly with airlines or via American Express Travel"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "amex_flights_bonus_booking_rule",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_flight",
+          "message": "Higher earn on flights booked directly with airlines or via Amex Travel",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/platinum/"
         }
       ]
     },
@@ -414,6 +628,16 @@
           "type": "conditional_note",
           "text": "10x miles earn requires booking through Capital One Travel portal"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "c1_travel_portal_requirement",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn requires booking via Capital One Travel",
+          "source_url": "https://www.capitalone.com/credit-cards/venture-x/"
+        }
       ]
     },
     {
@@ -439,6 +663,22 @@
           "type": "conditional_note",
           "text": "3x points earned on travel includes airline, hotel/motel, timeshare, vehicle/auto rental, cruise lines, travel agencies, discount travel sites, and campgrounds"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "transit_definition",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Transit (rail, taxis, ferries, tolls, parking) may be treated as Travel (issuer definition)",
+          "source_url": "https://creditcards.wellsfargo.com/autograph-visa-credit-card/?sub_channel=WEB&vendor_code=WF"
+        },
+        {
+          "condition_key": "travel_definition",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Travel category includes airline, hotel, rental cars, cruises, travel agencies (issuer definition)",
+          "source_url": "https://creditcards.wellsfargo.com/autograph-visa-credit-card/?sub_channel=WEB&vendor_code=WF"
+        }
       ]
     },
     {
@@ -463,6 +703,31 @@
         {
           "type": "conditional_note",
           "text": "2 miles per $1 spent on hotel stays when booked directly with the hotel"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "hotel_direct_booking_rule",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "subscope": "travel_hotel",
+          "message": "Higher earn on hotels may require booking directly with the hotel (issuer definition)",
+          "source_url": "https://www.chase.com/personal/credit-cards/united/united-explorer-card/earn-rewards"
+        },
+        {
+          "condition_key": "united_hotels_portal",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn on hotels when booked via United Hotels",
+          "source_url": "https://www.chase.com/personal/credit-cards/united/united-explorer-card/earn-rewards"
+        },
+        {
+          "condition_key": "united_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to United purchases",
+          "source_url": "https://www.chase.com/personal/credit-cards/united/united-explorer-card/earn-rewards"
         }
       ]
     },
@@ -513,6 +778,15 @@
           "type": "conditional_note",
           "text": "Earns 1x on rent (special category; not modeled)"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "rent_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Rent is a special category and is not modeled in RightCard",
+          "source_url": "https://www.biltrewards.com/"
+        }
       ]
     },
     {
@@ -562,6 +836,23 @@
         {
           "type": "conditional_note",
           "text": "4x points on flights and hotels booked direct"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "chase_travel_portal_bonus",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn when booked via Chase Travel",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+        },
+        {
+          "condition_key": "flights_hotels_direct_rule",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Higher earn on flights/hotels may apply when booked direct (issuer definition)",
+          "source_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
         }
       ]
     },
@@ -642,6 +933,15 @@
           "type": "conditional_note",
           "text": "Preferred Rewards bonus tiers not modeled"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "preferred_rewards_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Preferred Rewards bonus tiers are not modeled in RightCard",
+          "source_url": "https://www.bankofamerica.com/credit-cards/products/premium-rewards-credit-card/"
+        }
       ]
     },
     {
@@ -663,6 +963,15 @@
           "type": "conditional_note",
           "text": "Preferred Rewards bonus tiers not modeled"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "preferred_rewards_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Preferred Rewards bonus tiers are not modeled in RightCard",
+          "source_url": "https://www.bankofamerica.com/credit-cards/products/travel-rewards-credit-card/"
+        }
       ]
     },
     {
@@ -683,6 +992,15 @@
         {
           "type": "conditional_note",
           "text": "Preferred Rewards bonus tiers not modeled"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "preferred_rewards_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Preferred Rewards bonus tiers are not modeled in RightCard",
+          "source_url": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/"
         }
       ]
     },
@@ -708,6 +1026,15 @@
       ],
       "program_links": [
         "usbank_cashplus_5pct_rotating"
+      ],
+      "conditions": [
+        {
+          "condition_key": "cashplus_selection_required",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "5% categories require user selection/activation (modeled via Programs when applicable)",
+          "source_url": "https://www.usbank.com/credit-cards/cash-plus-visa-signature-credit-card.html"
+        }
       ]
     },
     {
@@ -728,6 +1055,15 @@
         {
           "type": "conditional_note",
           "text": "Higher earn requires mobile wallet usage (not modeled)"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "mobile_wallet_required",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Higher earn may require using a mobile wallet (not modeled)",
+          "source_url": "https://rewards.usbank.com/benefits/card/AltitudeReserveBenefits"
         }
       ]
     },
@@ -758,6 +1094,24 @@
           "type": "conditional_note",
           "text": "4x points at gas stations/EV charging stations on your first $1,000 each quarter"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "discount_store_exclusion",
+          "type": "exclusion",
+          "applies_to": "other",
+          "message": "Some bonus categories exclude discount stores/supercenters and wholesale clubs (issuer terms)",
+          "source_url": "https://www.usbank.com/credit-cards/altitude-connect-visa-signature-credit-card.html"
+        },
+        {
+          "condition_key": "gas_cap_1000_quarter",
+          "type": "cap",
+          "applies_to": "gas",
+          "message": "Higher earn at gas/EV charging applies on first $1,000 each quarter",
+          "source_url": "https://www.usbank.com/credit-cards/altitude-connect-visa-signature-credit-card.html",
+          "cap_amount": 1000,
+          "cap_period": "quarter"
+        }
       ]
     },
     {
@@ -778,6 +1132,15 @@
         {
           "type": "conditional_note",
           "text": "Rewards redemption requires Fidelity account"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "redemption_requires_fidelity_account",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Rewards redemption may require a Fidelity account (issuer terms)",
+          "source_url": "https://www.fidelity.com/go/visa-signature-rewards-1502"
         }
       ]
     },
@@ -800,6 +1163,15 @@
           "type": "conditional_note",
           "text": "3% cash back applies only to PayPal purchases"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "paypal_only_bonus",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Higher earn applies only to PayPal purchases (not modeled)",
+          "source_url": "https://www.paypal.com/us/digital-wallet/manage-money/paypal-cashback-mastercard"
+        }
       ]
     },
     {
@@ -821,6 +1193,15 @@
           "type": "conditional_note",
           "text": "Points rounding and redemption bonuses not modeled"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "rounding_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Points rounding and redemption bonuses are not modeled in RightCard",
+          "source_url": "https://www.citi.com/credit-cards/citi-strata-credit-card"
+        }
       ]
     },
     {
@@ -841,6 +1222,16 @@
         {
           "type": "portal_note",
           "text": "Up to 5x travel when booked via Chase Travel portal"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "portal_chase_travel",
+          "type": "portal_requirement",
+          "applies_to": "travel",
+          "subscope": "travel_portal",
+          "message": "Higher earn when booked via Chase Travel",
+          "source_url": "https://www.chase.com/personal/credit-cards/freedom/rise"
         }
       ]
     },
@@ -867,6 +1258,22 @@
           "type": "conditional_note",
           "text": "2x miles on U.S. Supermarkets only"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "delta_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to Delta purchases",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-gold-american-express-card/"
+        },
+        {
+          "condition_key": "us_supermarkets_only",
+          "type": "issuer_definition",
+          "applies_to": "grocery",
+          "message": "Grocery bonus applies to U.S. supermarkets only (issuer definition)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-gold-american-express-card/"
+        }
       ]
     },
     {
@@ -891,6 +1298,15 @@
           "type": "conditional_note",
           "text": "Higher earn applies to Delta purchases only (not modeled)"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "delta_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to Delta purchases",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-platinum-american-express-card/"
+        }
       ]
     },
     {
@@ -912,6 +1328,15 @@
           "type": "conditional_note",
           "text": "Bonus earn applies to Southwest purchases only"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "southwest_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to Southwest purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/southwest/plus"
+        }
       ]
     },
     {
@@ -932,6 +1357,15 @@
         {
           "type": "conditional_note",
           "text": "Bonus earn applies to Southwest purchases only"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "southwest_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to Southwest purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/southwest/priority-credit-card"
         }
       ]
     },
@@ -962,6 +1396,22 @@
           "type": "conditional_note",
           "text": "Earn 7x total miles on United flights: 5x miles on fare from United as a MileagePlus member, plus 2x miles on entire United purchase with the United Gateway Card"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "transit_commuting_definition",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Local transit/commuting may be treated as Travel (issuer definition)",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/united/united-gateway"
+        },
+        {
+          "condition_key": "united_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to United purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/united/united-gateway"
+        }
       ]
     },
     {
@@ -982,6 +1432,15 @@
         {
           "type": "conditional_note",
           "text": "Bonus earn applies to American Airlines purchases only"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "aa_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "message": "Higher earn applies only to American Airlines purchases",
+          "source_url": "https://creditcards.aa.com/credit-cards/citi-platinum-card-american-airlines-direct/"
         }
       ]
     },
@@ -1012,6 +1471,25 @@
           "type": "conditional_note",
           "text": "3x points on dining, grocery, and gas combined capped at $6,000 annually; after that 2x points"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "combined_cap_6k_year",
+          "type": "cap",
+          "applies_to": "other",
+          "message": "Bonus on dining/grocery/gas is capped at $6,000 per year (issuer terms)",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/marriott-bonvoy/boundless",
+          "cap_amount": 6000,
+          "cap_period": "year"
+        },
+        {
+          "condition_key": "marriott_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "subscope": "travel_hotel",
+          "message": "Higher earn applies only to Marriott hotel purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/marriott-bonvoy/boundless"
+        }
       ]
     },
     {
@@ -1032,6 +1510,16 @@
         {
           "type": "conditional_note",
           "text": "Higher earn applies to Hyatt hotel spend only"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "hyatt_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "subscope": "travel_hotel",
+          "message": "Higher earn applies only to Hyatt hotel purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/world-of-hyatt"
         }
       ]
     },
@@ -1057,6 +1545,16 @@
         {
           "type": "conditional_note",
           "text": "Earn 12x Hilton Honors Bonus Points on purchases made directly with Hotels and Resorts within the Hilton portfolio"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "hilton_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "subscope": "travel_hotel",
+          "message": "Higher earn applies only to Hilton purchases",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors-surpass/"
         }
       ]
     },
@@ -1087,6 +1585,23 @@
           "type": "conditional_note",
           "text": "Anniversary Free Night earned each account anniversary year with a current point redemption cap of 40,000 points"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "free_night_not_modeled",
+          "type": "not_modeled",
+          "applies_to": "other",
+          "message": "Anniversary free night benefit is not modeled in RightCard",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/premier"
+        },
+        {
+          "condition_key": "ihg_purchases_only",
+          "type": "merchant_only",
+          "applies_to": "travel",
+          "subscope": "travel_hotel",
+          "message": "Higher earn applies only to IHG hotel purchases",
+          "source_url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/premier"
+        }
       ]
     },
     {
@@ -1116,6 +1631,24 @@
           "type": "conditional_note",
           "text": "4% cash back on gas is capped at $7,000 per year, then 1% thereafter"
         }
+      ],
+      "conditions": [
+        {
+          "condition_key": "costco_membership_required",
+          "type": "membership_required",
+          "applies_to": "other",
+          "message": "Costco membership required; higher earn applies to Costco and select categories",
+          "source_url": "https://www.citi.com/credit-cards/citi-costco-anywhere-visa-credit-card"
+        },
+        {
+          "condition_key": "gas_cap_7000_year",
+          "type": "cap",
+          "applies_to": "gas",
+          "message": "Gas bonus is capped at $7,000 per year; then base rate applies",
+          "source_url": "https://www.citi.com/credit-cards/citi-costco-anywhere-visa-credit-card",
+          "cap_amount": 7000,
+          "cap_period": "year"
+        }
       ]
     },
     {
@@ -1136,6 +1669,15 @@
         {
           "type": "conditional_note",
           "text": "Travel and transit definitions are issuer-specific (not expanded)"
+        }
+      ],
+      "conditions": [
+        {
+          "condition_key": "travel_transit_definition",
+          "type": "issuer_definition",
+          "applies_to": "travel",
+          "message": "Travel and transit category definitions are issuer-specific (not expanded)",
+          "source_url": "https://www.americanexpress.com/us/credit-cards/card/green/"
         }
       ]
     }
